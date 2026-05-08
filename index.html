@@ -4,1393 +4,748 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>eTags QA Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
-  :root {
-    --g900: #0d2414;
-    --g800: #1a3d22;
-    --g700: #1e5128;
-    --g600: #2d8a42;
-    --g500: #3aad54;
-    --g400: #5ec976;
-    --g300: #8fdd9f;
-    --g100: #d6f0dc;
-    --g50:  #f0faf2;
-    --ink:  #0f1a12;
-    --ink2: #2c3d2f;
-    --muted: #647a68;
-    --border: #d0e8d4;
-    --surface: #ffffff;
-    --surface2: #f4faf5;
-    --amber: #d97706;
-    --amber-bg: #fef3c7;
-    --red: #dc2626;
-    --red-bg: #fee2e2;
-    --blue: #1d4ed8;
-    --blue-bg: #dbeafe;
-    --radius: 12px;
-    --radius-lg: 18px;
-  }
+:root{
+  --g900:#0a1f0d;--g800:#0f2e14;--g750:#1a3d1f;--g700:#1e5128;
+  --g600:#2d8a42;--g500:#3aad54;--g400:#5ec976;--g300:#8fdd9f;
+  --g100:#d6f0dc;--g50:#f0faf2;
+  --ink:#0d1f10;--ink2:#2a3d2d;--muted:#5a7060;
+  --border:#cce8d2;--surface:#fff;--surface2:#f5faf6;--surface3:#edf7ef;
+  --amber:#c77a06;--amber-l:#fef3c7;
+  --red:#c42020;--red-l:#fee2e2;
+  --blue:#1a44c8;--blue-l:#dbeafe;
+  --r:10px;--r-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Bricolage Grotesque',sans-serif;background:var(--surface2);color:var(--ink);min-height:100vh;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── TOPBAR ── */
+.topbar{background:var(--g800);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,0.06);box-shadow:0 2px 20px rgba(0,0,0,0.25);}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand img{height:34px;width:auto;border-radius:4px;}
+.brand-text{display:flex;flex-direction:column;}
+.brand-name{font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.3px;line-height:1;}
+.brand-sub{font-size:9px;color:var(--g400);text-transform:uppercase;letter-spacing:1.2px;margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.chip{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.7);padding:5px 12px;border-radius:20px;font-size:11px;font-family:'JetBrains Mono',monospace;}
+.btn-sm{background:var(--g600);border:none;color:#fff;padding:7px 14px;border-radius:8px;font-size:12px;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:5px;}
+.btn-sm:hover{background:var(--g500);}
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--surface2);
-    color: var(--ink);
-    min-height: 100vh;
-  }
+/* ── FILTERS ── */
+.filters{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.filter-lbl{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;}
+.sel{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:6px 11px;font-size:12px;font-family:'Bricolage Grotesque',sans-serif;color:var(--ink);cursor:pointer;outline:none;transition:border-color .2s;}
+.sel:focus{border-color:var(--g500);}
+.sep{width:1px;height:20px;background:var(--border);}
+#rec-count{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
 
-  /* ── TOPBAR ── */
-  .topbar {
-    background: var(--g800);
-    padding: 0 32px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-  }
-  .topbar-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .brand-logo {
-    width: 32px;
-    height: 32px;
-    background: var(--g500);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 16px;
-    color: white;
-  }
-  .brand-name {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 16px;
-    color: white;
-    letter-spacing: -0.3px;
-  }
-  .brand-sub {
-    font-size: 11px;
-    color: var(--g300);
-    font-weight: 400;
-    margin-left: 4px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  .topbar-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .btn-refresh {
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: white;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    transition: background 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .btn-refresh:hover { background: rgba(255,255,255,0.18); }
-  .last-updated {
-    font-size: 11px;
-    color: var(--g300);
-    font-family: 'DM Mono', monospace;
-  }
+/* ── MAIN ── */
+.main{padding:22px 28px 56px;max-width:1440px;margin:0 auto;}
 
-  /* ── FILTERS ── */
-  .filters-bar {
-    background: white;
-    border-bottom: 1px solid var(--border);
-    padding: 12px 32px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .filter-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-right: 4px;
-  }
-  .filter-select {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 13px;
-    font-family: 'Inter', sans-serif;
-    color: var(--ink);
-    cursor: pointer;
-    outline: none;
-    transition: border-color 0.2s;
-    min-width: 140px;
-  }
-  .filter-select:focus { border-color: var(--g500); }
-  .filter-divider { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:20px;display:flex;align-items:flex-end;justify-content:space-between;}
+.page-title{font-size:22px;font-weight:800;color:var(--g700);letter-spacing:-0.5px;}
+.page-sub{font-size:12px;color:var(--muted);margin-top:3px;}
 
-  /* ── MAIN LAYOUT ── */
-  .main {
-    padding: 24px 32px 48px;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
+/* ── KPI STRIP ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
+.kpi{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s;cursor:default;}
+.kpi:hover{box-shadow:0 6px 24px rgba(30,81,40,0.1);transform:translateY(-1px);}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--g500);border-radius:var(--r-lg) var(--r-lg) 0 0;}
+.kpi.a::after{background:var(--g500);}
+.kpi.b::after{background:#16a34a;}
+.kpi.c::after{background:var(--amber);}
+.kpi.d::after{background:var(--red);}
+.kpi.e::after{background:var(--blue);}
+.kpi-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px;}
+.kpi-val{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1;}
+.kpi.a .kpi-val,.kpi.b .kpi-val{color:var(--g700);}
+.kpi.c .kpi-val{color:var(--amber);}
+.kpi.d .kpi-val{color:var(--red);}
+.kpi.e .kpi-val{color:var(--blue);}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;margin-top:6px;}
+.bg{background:var(--g100);color:var(--g800);}
+.ba{background:var(--amber-l);color:#7c4a03;}
+.br{background:var(--red-l);color:#7f1d1d;}
+.bb{background:var(--blue-l);color:#1e3a8a;}
 
-  /* ── KPI STRIP ── */
-  .kpi-strip {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 14px;
-    margin-bottom: 24px;
-  }
-  .kpi-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 20px;
-    position: relative;
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-  }
-  .kpi-card:hover { box-shadow: 0 4px 20px rgba(30,81,40,0.1); }
-  .kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--g500);
-  }
-  .kpi-card.amber::before { background: var(--amber); }
-  .kpi-card.red::before   { background: var(--red); }
-  .kpi-card.blue::before  { background: var(--blue); }
-  .kpi-label {
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  .kpi-value {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 32px;
-    line-height: 1;
-    color: var(--g700);
-    letter-spacing: -1px;
-  }
-  .kpi-card.amber .kpi-value { color: var(--amber); }
-  .kpi-card.red .kpi-value   { color: var(--red); }
-  .kpi-card.blue .kpi-value  { color: var(--blue); }
-  .kpi-sub {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-  .kpi-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 600;
-    margin-top: 6px;
-  }
-  .badge-green  { background: var(--g100);   color: var(--g700); }
-  .badge-amber  { background: var(--amber-bg); color: #92400e; }
-  .badge-red    { background: var(--red-bg);   color: #991b1b; }
+/* ── GRID LAYOUTS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+.g31{display:grid;grid-template-columns:2.2fr 1fr;gap:14px;margin-bottom:14px;}
+.g21{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:14px;}
 
-  /* ── GRID LAYOUTS ── */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .grid-3-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 16px; }
+/* ── CARDS ── */
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;overflow:hidden;}
+.card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.card-title{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-0.2px;}
+.card-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.card-chip{font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--g50);color:var(--g700);border:1px solid var(--g100);white-space:nowrap;}
 
-  /* ── CARDS ── */
-  .card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 22px;
-    overflow: hidden;
-  }
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .card-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--ink);
-    letter-spacing: -0.2px;
-  }
-  .card-subtitle {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-  .card-badge {
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
-    background: var(--g50);
-    color: var(--g700);
-    border: 1px solid var(--g100);
-  }
+/* ── AGENT TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl thead tr{border-bottom:2px solid var(--border);}
+.tbl thead th{padding:7px 10px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);}
+.tbl tbody tr{border-bottom:1px solid var(--surface3);transition:background .12s;}
+.tbl tbody tr:hover{background:var(--g50);}
+.tbl tbody td{padding:9px 10px;color:var(--ink2);}
+.tbl .agent-n{font-weight:700;color:var(--ink);}
+.pill{display:inline-block;padding:2px 9px;border-radius:10px;font-weight:700;font-size:11px;font-family:'JetBrains Mono',monospace;}
+.pill-a{background:var(--g100);color:var(--g800);}
+.pill-d{background:var(--amber-l);color:#7c4a03;}
+.pill-n{background:var(--red-l);color:#7f1d1d;}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
 
-  /* ── AGENT TABLE ── */
-  .agent-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .agent-table thead tr { border-bottom: 2px solid var(--border); }
-  .agent-table thead th {
-    padding: 8px 10px;
-    text-align: left;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.7px;
-    color: var(--muted);
-  }
-  .agent-table tbody tr {
-    border-bottom: 1px solid var(--g50);
-    transition: background 0.15s;
-  }
-  .agent-table tbody tr:hover { background: var(--g50); }
-  .agent-table tbody td { padding: 9px 10px; color: var(--ink2); }
-  .agent-name { font-weight: 600; color: var(--ink); }
-  .score-pill {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 11px;
-    font-family: 'DM Mono', monospace;
-  }
-  .pill-achieved  { background: var(--g100);    color: var(--g800); }
-  .pill-developing{ background: var(--amber-bg); color: #92400e; }
-  .pill-needs     { background: var(--red-bg);   color: #991b1b; }
+/* ── PROGRESS BARS ── */
+.pr-row{margin-bottom:14px;}
+.pr-lbl{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;}
+.pr-lbl span:first-child{color:var(--ink2);font-weight:600;}
+.pr-lbl span:last-child{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
+.pr-track{background:var(--g50);border-radius:4px;height:8px;overflow:hidden;}
+.pr-fill{height:8px;border-radius:4px;transition:width .7s cubic-bezier(.4,0,.2,1);}
 
-  /* ── PROGRESS BARS ── */
-  .progress-row { margin-bottom: 12px; }
-  .progress-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
-  .progress-label span:first-child { color: var(--ink2); font-weight: 500; }
-  .progress-label span:last-child  { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
-  .progress-track { background: var(--g50); border-radius: 4px; height: 7px; overflow: hidden; }
-  .progress-fill  { height: 7px; border-radius: 4px; transition: width 0.6s ease; }
+/* ── CRITICAL ERRORS ── */
+.err-row{display:flex;align-items:center;padding:7px 0;border-bottom:1px solid var(--surface3);font-size:11px;gap:8px;}
+.err-row:last-child{border:none;}
+.err-name{flex:1;color:var(--ink2);line-height:1.3;}
+.err-cnt{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;color:var(--red);min-width:22px;text-align:right;}
+.err-bar{width:72px;background:var(--red-l);border-radius:3px;height:5px;overflow:hidden;flex-shrink:0;}
+.err-bar-f{background:var(--red);height:5px;border-radius:3px;}
 
-  /* ── CRITICAL ERRORS TABLE ── */
-  .error-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--g50);
-    font-size: 12px;
-  }
-  .error-row:last-child { border-bottom: none; }
-  .error-name { color: var(--ink2); flex: 1; }
-  .error-count {
-    font-family: 'DM Mono', monospace;
-    font-weight: 500;
-    font-size: 13px;
-    color: var(--red);
-    min-width: 28px;
-    text-align: right;
-    margin-right: 12px;
-  }
-  .error-bar-wrap { width: 80px; background: var(--red-bg); border-radius: 3px; height: 5px; overflow: hidden; }
-  .error-bar-fill { background: var(--red); height: 5px; border-radius: 3px; }
+/* ── SCORE HEATMAP SECTION ── */
+.hm-grid{display:grid;gap:3px;}
+.hm-cell{border-radius:4px;padding:5px 6px;font-size:10px;font-weight:600;text-align:center;font-family:'JetBrains Mono',monospace;}
 
-  /* ── AI INSIGHTS ── */
-  .ai-card {
-    background: var(--g800);
-    border-radius: var(--radius-lg);
-    padding: 24px 26px;
-    color: white;
-    margin-bottom: 16px;
-    position: relative;
-    overflow: hidden;
-  }
-  .ai-card::after {
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 160px; height: 160px;
-    background: var(--g600);
-    border-radius: 50%;
-    opacity: 0.15;
-  }
-  .ai-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .ai-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .ai-dot {
-    width: 8px; height: 8px;
-    background: var(--g400);
-    border-radius: 50%;
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-  .btn-generate {
-    background: var(--g500);
-    border: none;
-    color: white;
-    padding: 8px 18px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .btn-generate:hover { background: var(--g600); }
-  .btn-generate:active { transform: scale(0.97); }
-  .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; }
-  .ai-content {
-    font-size: 13px;
-    line-height: 1.7;
-    color: rgba(255,255,255,0.85);
-    min-height: 44px;
-  }
-  .ai-content em { color: var(--g300); font-style: normal; font-weight: 500; }
+/* ── SPARKLINE TREND ── */
+.sparkline-val{font-family:'JetBrains Mono',monospace;font-size:11px;}
 
-  /* API KEY INPUT */
-  .api-key-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-  }
-  .api-key-input {
-    flex: 1;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
-    padding: 7px 12px;
-    color: white;
-    font-size: 12px;
-    font-family: 'DM Mono', monospace;
-    outline: none;
-  }
-  .api-key-input::placeholder { color: rgba(255,255,255,0.35); }
-  .api-key-label { font-size: 11px; color: var(--g300); white-space: nowrap; }
+/* ── STATE BOXES ── */
+.state{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;}
 
-  /* ── SHEET CONFIG ── */
-  .config-banner {
-    background: var(--blue-bg);
-    border: 1px solid #93c5fd;
-    border-radius: var(--radius);
-    padding: 14px 18px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .config-banner p { font-size: 13px; color: var(--blue); flex: 1; }
-  .config-input {
-    border: 1px solid #93c5fd;
-    border-radius: 8px;
-    padding: 7px 12px;
-    font-size: 12px;
-    font-family: 'DM Mono', monospace;
-    color: var(--blue);
-    background: white;
-    outline: none;
-    min-width: 260px;
-  }
-  .btn-load {
-    background: var(--blue);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-  }
-  .btn-load:hover { background: #1e40af; }
+/* ── SCROLL ── */
+.scroll{overflow-x:auto;}
 
-  /* ── LOADING / EMPTY ── */
-  .state-box {
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--muted);
-  }
-  .state-icon { font-size: 36px; margin-bottom: 12px; }
-  .state-text { font-size: 14px; }
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.kpi{animation:fadeUp .4s ease both;}
+.kpi:nth-child(1){animation-delay:.05s;}
+.kpi:nth-child(2){animation-delay:.10s;}
+.kpi:nth-child(3){animation-delay:.15s;}
+.kpi:nth-child(4){animation-delay:.20s;}
+.kpi:nth-child(5){animation-delay:.25s;}
+.card{animation:fadeUp .5s ease both;animation-delay:.3s;}
 
-  /* ── TREND INDICATOR ── */
-  .trend { font-size: 11px; font-weight: 600; margin-left: 6px; }
-  .trend.up   { color: var(--g500); }
-  .trend.down { color: var(--red); }
-
-  /* ── CANVAS CONTAINERS ── */
-  .chart-wrap { position: relative; }
-
-  /* ── SCROLLABLE TABLE ── */
-  .table-scroll { overflow-x: auto; }
-
-  @media (max-width: 1100px) {
-    .kpi-strip { grid-template-columns: repeat(3, 1fr); }
-    .grid-2, .grid-3, .grid-3-1 { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 700px) {
-    .kpi-strip { grid-template-columns: 1fr 1fr; }
-    .main { padding: 16px; }
-    .filters-bar { padding: 10px 16px; }
-    .topbar { padding: 0 16px; }
-  }
+@media(max-width:1100px){.kpi-strip{grid-template-columns:repeat(3,1fr);}.g2,.g3,.g31,.g21{grid-template-columns:1fr;}}
+@media(max-width:680px){.kpi-strip{grid-template-columns:1fr 1fr;}.main{padding:14px 14px 40px;}.topbar,.filters{padding-left:14px;padding-right:14px;}}
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <div class="topbar-brand">
-    <div class="brand-logo">e</div>
-    <span class="brand-name">eTags</span>
-    <span class="brand-sub">QA Dashboard</span>
+  <div class="brand">
+    <img src="data:image/jpeg;base64,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" alt="eTags">
+    <div class="brand-text">
+      <span class="brand-name">eTags</span>
+      <span class="brand-sub">QA Intelligence</span>
+    </div>
   </div>
   <div class="topbar-right">
-    <span class="last-updated" id="last-updated">—</span>
-    <button class="btn-refresh" onclick="loadData()">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M10 6A4 4 0 1 1 6 2M6 2L8 0M6 2L4 0" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="chip" id="last-upd">Loading…</span>
+    <button class="btn-sm" onclick="loadData()">
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M10 6A4 4 0 1 1 6 2M6 2L8.5 0M6 2L3.5 0" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Refresh
     </button>
   </div>
 </div>
 
 <!-- FILTERS -->
-<div class="filters-bar">
-  <span class="filter-label">Filter</span>
-  <select class="filter-select" id="filter-period" onchange="applyFilters()">
+<div class="filters">
+  <span class="filter-lbl">View</span>
+  <select class="sel" id="f-period" onchange="applyFilters()">
     <option value="all">All time</option>
     <option value="this-month">This month</option>
     <option value="last-month">Last month</option>
     <option value="last-30">Last 30 days</option>
     <option value="last-90">Last 90 days</option>
   </select>
-  <select class="filter-select" id="filter-agent" onchange="applyFilters()">
+  <select class="sel" id="f-agent" onchange="applyFilters()">
     <option value="all">All agents</option>
   </select>
-  <select class="filter-select" id="filter-type" onchange="applyFilters()">
-    <option value="all">All types</option>
+  <select class="sel" id="f-type" onchange="applyFilters()">
+    <option value="all">All interaction types</option>
     <option value="Inbound">Inbound</option>
     <option value="Outbound">Outbound</option>
     <option value="Ticket">Ticket</option>
     <option value="Email">Email</option>
     <option value="Chat">Chat</option>
   </select>
-  <div class="filter-divider"></div>
-  <span id="record-count" style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;">0 evaluations</span>
+  <select class="sel" id="f-rating" onchange="applyFilters()">
+    <option value="all">All ratings</option>
+    <option value="Achieved">Achieved</option>
+    <option value="Developing">Developing</option>
+    <option value="Needs Support">Needs Support</option>
+  </select>
+  <div class="sep"></div>
+  <span id="rec-count">— evaluations</span>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-  <!-- SHEET CONFIG BANNER -->
-  <div class="config-banner" id="config-banner">
-    <p>📊 Paste your Google Sheet CSV export URL to load live data</p>
-    <input class="config-input" id="sheet-url" placeholder="https://docs.google.com/spreadsheets/d/YOUR_ID/export?format=csv&gid=RAW_DATA_GID" value="">
-    <button class="btn-load" onclick="loadFromSheet()">Load Data</button>
+  <div class="page-header">
+    <div>
+      <div class="page-title">Quality Assurance Dashboard</div>
+      <div class="page-sub">Live data · eTags BPO · Google Sheets sync</div>
+    </div>
   </div>
 
-  <!-- KPI STRIP -->
-  <div class="kpi-strip" id="kpi-strip">
-    <div class="kpi-card">
-      <div class="kpi-label">Avg QA Score</div>
-      <div class="kpi-value" id="kpi-avg">—</div>
+  <!-- KPIs -->
+  <div class="kpi-strip">
+    <div class="kpi a">
+      <div class="kpi-lbl">Avg QA Score</div>
+      <div class="kpi-val" id="k-avg">—</div>
       <div class="kpi-sub">across all evaluations</div>
-      <div id="kpi-avg-badge"></div>
+      <div id="k-avg-badge"></div>
     </div>
-    <div class="kpi-card" style="--accent:var(--g500)">
-      <div class="kpi-label">Achieved</div>
-      <div class="kpi-value" id="kpi-achieved" style="color:var(--g600)">—</div>
-      <div class="kpi-sub" id="kpi-achieved-pct"></div>
+    <div class="kpi b">
+      <div class="kpi-lbl">Achieved</div>
+      <div class="kpi-val" id="k-ach" style="color:var(--g600)">—</div>
+      <div class="kpi-sub" id="k-ach-p">agents · 80–100%</div>
     </div>
-    <div class="kpi-card amber">
-      <div class="kpi-label">Developing</div>
-      <div class="kpi-value" id="kpi-developing">—</div>
-      <div class="kpi-sub" id="kpi-developing-pct"></div>
+    <div class="kpi c">
+      <div class="kpi-lbl">Developing</div>
+      <div class="kpi-val" id="k-dev">—</div>
+      <div class="kpi-sub" id="k-dev-p">agents · 40–79%</div>
     </div>
-    <div class="kpi-card red">
-      <div class="kpi-label">Needs Support</div>
-      <div class="kpi-value" id="kpi-needs">—</div>
-      <div class="kpi-sub" id="kpi-needs-pct"></div>
+    <div class="kpi d">
+      <div class="kpi-lbl">Needs Support</div>
+      <div class="kpi-val" id="k-need">—</div>
+      <div class="kpi-sub" id="k-need-p">agents · 0–39%</div>
     </div>
-    <div class="kpi-card blue">
-      <div class="kpi-label">Total Evaluations</div>
-      <div class="kpi-value" id="kpi-total" style="color:var(--blue)">—</div>
-      <div class="kpi-sub" id="kpi-agents-count"></div>
-    </div>
-  </div>
-
-  <!-- AI INSIGHTS -->
-  <div class="ai-card">
-    <div class="ai-header">
-      <div class="ai-title">
-        <div class="ai-dot"></div>
-        AI Insights
-      </div>
-      <button class="btn-generate" id="btn-ai" onclick="generateInsights()">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v2M6.5 10v2M1 6.5h2M10 6.5h2M2.93 2.93l1.41 1.41M8.66 8.66l1.41 1.41M2.93 10.07l1.41-1.41M8.66 4.34l1.41-1.41" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
-        Generate Insights
-      </button>
-    </div>
-    <div class="ai-content" id="ai-content">
-      Load data and click <em>Generate Insights</em> to get an AI-powered analysis of your team's QA performance.
-    </div>
-    <div class="api-key-row">
-      <span class="api-key-label">Claude API Key</span>
-      <input class="api-key-input" id="api-key" type="password" placeholder="sk-ant-...  (stored locally, never sent anywhere else)">
+    <div class="kpi e">
+      <div class="kpi-lbl">Total Evaluations</div>
+      <div class="kpi-val" id="k-total" style="color:var(--blue)">—</div>
+      <div class="kpi-sub" id="k-agents">agents evaluated</div>
     </div>
   </div>
 
-  <!-- ROW 1: Score trend + Rating distribution -->
-  <div class="grid-2">
+  <!-- ROW 1: Trend + Donut -->
+  <div class="g2">
     <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Score Trend Over Time</div>
-          <div class="card-subtitle">Average QA score per audit date</div>
-        </div>
-        <span class="card-badge" id="trend-badge">—</span>
+      <div class="card-hdr">
+        <div><div class="card-title">Score Trend Over Time</div><div class="card-sub">Average QA score per audit date</div></div>
+        <span class="card-chip" id="trend-chip">—</span>
       </div>
-      <div class="chart-wrap"><canvas id="chart-trend" height="180"></canvas></div>
+      <canvas id="c-trend" height="170"></canvas>
     </div>
     <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Rating Distribution</div>
-          <div class="card-subtitle">Achieved · Developing · Needs Support</div>
-        </div>
+      <div class="card-hdr">
+        <div><div class="card-title">Rating Distribution</div><div class="card-sub">Achieved · Developing · Needs Support</div></div>
       </div>
-      <div class="chart-wrap" style="max-height:220px;display:flex;align-items:center;justify-content:center;">
-        <canvas id="chart-rating" height="200" style="max-width:200px"></canvas>
+      <div style="display:flex;align-items:center;justify-content:center;height:170px;">
+        <canvas id="c-donut" style="max-width:190px;max-height:190px;"></canvas>
       </div>
     </div>
   </div>
 
-  <!-- ROW 2: Agent leaderboard + Section scores -->
-  <div class="grid-3-1">
+  <!-- ROW 2: Agent Leaderboard + Section Scores -->
+  <div class="g31">
     <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Agent Leaderboard</div>
-          <div class="card-subtitle">Average score per agent, all evaluations in range</div>
-        </div>
+      <div class="card-hdr">
+        <div><div class="card-title">Agent Leaderboard</div><div class="card-sub">Ranked by average QA score</div></div>
       </div>
-      <div class="table-scroll">
-        <table class="agent-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Agent</th>
-              <th>Evals</th>
-              <th>Avg Score</th>
-              <th>CX Care</th>
-              <th>Resolution</th>
-              <th>Closing</th>
-              <th>Rating</th>
-            </tr>
-          </thead>
-          <tbody id="agent-tbody">
-            <tr><td colspan="8"><div class="state-box"><div class="state-text">Load data to see agent rankings</div></div></td></tr>
-          </tbody>
+      <div class="scroll">
+        <table class="tbl">
+          <thead><tr>
+            <th>#</th><th>Agent</th><th>Evals</th>
+            <th>Avg Score</th><th>CX Care</th><th>Resolution</th><th>Closing</th>
+            <th>Critical</th><th>Rating</th>
+          </tr></thead>
+          <tbody id="t-agents"><tr><td colspan="9"><div class="state">Loading data…</div></td></tr></tbody>
         </table>
       </div>
     </div>
     <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Section Avg Scores</div>
-          <div class="card-subtitle">vs max weight</div>
-        </div>
+      <div class="card-hdr">
+        <div><div class="card-title">Section Averages</div><div class="card-sub">Score vs max weight</div></div>
       </div>
-      <div id="section-bars">
-        <div class="state-box"><div class="state-text">No data</div></div>
-      </div>
+      <div id="sec-bars"><div class="state">No data</div></div>
     </div>
   </div>
 
-  <!-- ROW 3: Score by agent bar + Critical errors -->
-  <div class="grid-2">
+  <!-- ROW 3: Agent bar + Criterion deep-dive -->
+  <div class="g2">
     <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Score by Agent</div>
-          <div class="card-subtitle">Average final QA score</div>
-        </div>
+      <div class="card-hdr">
+        <div><div class="card-title">Score by Agent</div><div class="card-sub">Color = rating tier</div></div>
       </div>
-      <div class="chart-wrap"><canvas id="chart-agents" height="200"></canvas></div>
+      <canvas id="c-agents" height="190"></canvas>
     </div>
     <div class="card">
-      <div class="card-header">
-        <div>
-          <div class="card-title">Critical Errors</div>
-          <div class="card-subtitle">Frequency of flagged critical errors</div>
-        </div>
+      <div class="card-hdr">
+        <div><div class="card-title">Individual Criterion Averages</div><div class="card-sub">All 14 QA criteria, avg score vs max weight</div></div>
       </div>
-      <div id="critical-errors-list">
-        <div class="state-box"><div class="state-text">No critical errors in range</div></div>
-      </div>
+      <canvas id="c-criteria" height="190"></canvas>
     </div>
   </div>
 
-  <!-- ROW 4: Score by type + Evaluations per evaluator -->
-  <div class="grid-3">
+  <!-- ROW 4: Critical errors + Score distribution + Evaluator load -->
+  <div class="g3">
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Score by Interaction Type</div>
-        <div class="card-subtitle">Inbound · Outbound · Ticket · etc.</div>
+      <div class="card-hdr">
+        <div><div class="card-title">Critical Errors</div><div class="card-sub">Frequency by error type</div></div>
       </div>
-      <div class="chart-wrap"><canvas id="chart-by-type" height="180"></canvas></div>
+      <div id="err-list"><div class="state">No critical errors in range ✅</div></div>
     </div>
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Score Distribution</div>
-        <div class="card-subtitle">How scores cluster across evaluations</div>
+      <div class="card-hdr">
+        <div><div class="card-title">Score Distribution</div><div class="card-sub">How scores cluster</div></div>
       </div>
-      <div class="chart-wrap"><canvas id="chart-distribution" height="180"></canvas></div>
+      <canvas id="c-dist" height="180"></canvas>
     </div>
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Evals per Evaluator</div>
-        <div class="card-subtitle">QA analyst workload</div>
+      <div class="card-hdr">
+        <div><div class="card-title">By Interaction Type</div><div class="card-sub">Avg score per channel</div></div>
       </div>
-      <div class="chart-wrap"><canvas id="chart-evaluator" height="180"></canvas></div>
+      <canvas id="c-type" height="180"></canvas>
+    </div>
+  </div>
+
+  <!-- ROW 5: Evaluator workload + Pass rate over time -->
+  <div class="g21">
+    <div class="card">
+      <div class="card-hdr">
+        <div><div class="card-title">Achieved Rate Over Time</div><div class="card-sub">% of evaluations scoring Achieved per period</div></div>
+      </div>
+      <canvas id="c-passrate" height="160"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hdr">
+        <div><div class="card-title">Evaluator Workload</div><div class="card-sub">Evals submitted per QA analyst</div></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;height:160px;">
+        <canvas id="c-eval" style="max-width:180px;max-height:180px;"></canvas>
+      </div>
     </div>
   </div>
 
 </div><!-- /main -->
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────
-const SHEET_URL_KEY = 'etags_sheet_url';
-const API_KEY_KEY   = 'etags_api_key';
+const SHEET_ID = "1R1uDpHYxP7y2hkHH15iGDP2s4868MehHSTGZqik0kgM";
+const RAW_GID  = "2138829177";
+const API_KEY  = "AIzaSyApIBuOtsMInMBZ3BUe9TXaFIk0JwNjzQg";
 
-// Column indices in Raw Data sheet (0-based, matches our Apps Script output)
-const COL = {
-  TIMESTAMP:    0,
-  EVALUATOR:    1,
-  AGENT:        2,
-  TYPE:         3,
-  DATE:         4,
-  CALL_LEN:     5,
-  CALL_ID:      6,
-  AUDIT_DATE:   7,
-  SUPERVISOR:   8,
-  // Scores 9-22 (14 criteria)
-  S_GREETING:   9,
-  S_WILLINGNESS:10,
-  S_EMPATHY:    11,
-  S_ACKNOWLEDGE:12,
-  S_QUESTIONS:  13,
-  S_VERIFICATION:14,
-  S_SOLUTIONS:  15,
-  S_CONFIRMED:  16,
-  S_EXPECTATIONS:17,
-  S_EXTRA_MILE: 18,
-  S_OBSERVATIONS:19,
-  S_CRM:        20,
-  S_FURTHER:    21,
-  S_CLOSING:    22,
-  // Section totals
-  TOTAL_CC:     23,
-  TOTAL_RES:    24,
-  TOTAL_CLS:    25,
-  // Result
-  CRITICAL_FLAG:26,
-  CRITICAL_DETAIL:27,
-  FINAL_SCORE:  28,
-  RATING:       29,
-  WENT_WELL:    30,
-  COULD_BETTER: 31,
-};
-
-let allRows = [];
-let filteredRows = [];
-let charts = {};
-
-// ── COLORS ───────────────────────────────────────────────────
+// ── COLUMN MAPPING (exact header order from Apps Script) ──────
 const C = {
-  green:  '#2d8a42',
-  greenL: '#d6f0dc',
-  amber:  '#d97706',
-  amberL: '#fef3c7',
-  red:    '#dc2626',
-  redL:   '#fee2e2',
-  blue:   '#1d4ed8',
-  blueL:  '#dbeafe',
-  muted:  '#647a68',
-  border: '#d0e8d4',
+  TIMESTAMP:0, EVALUATOR:1, AGENT:2, TYPE:3, DATE:4,
+  CALL_LEN:5, CALL_ID:6, AUDIT_DATE:7, SUPERVISOR:8,
+  S_GREETING:9, S_WILLINGNESS:10, S_EMPATHY:11, S_ACKNOWLEDGE:12,
+  S_QUESTIONS:13, S_VERIFICATION:14, S_SOLUTIONS:15, S_CONFIRMED:16,
+  S_EXPECTATIONS:17, S_EXTRA_MILE:18, S_OBSERVATIONS:19,
+  S_CRM:20, S_FURTHER:21, S_CLOSING:22,
+  TOTAL_CC:23, TOTAL_RES:24, TOTAL_CLS:25,
+  CRIT_FLAG:26, CRIT_DETAIL:27,
+  FINAL_SCORE:28, RATING:29,
+  WENT_WELL:30, COULD_BETTER:31,
 };
 
-// ── LOAD STORED CONFIG ────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  const savedUrl = localStorage.getItem(SHEET_URL_KEY);
-  const savedKey = localStorage.getItem(API_KEY_KEY);
-  if (savedUrl) document.getElementById('sheet-url').value = savedUrl;
-  if (savedKey) document.getElementById('api-key').value = savedKey;
-  if (savedUrl) loadFromSheet();
-});
+const CRITERIA = [
+  {label:'Professional Greeting',     max:2,  section:'CX Care'},
+  {label:'Willingness to Resolve',    max:8,  section:'CX Care'},
+  {label:'Empathy',                   max:8,  section:'CX Care'},
+  {label:'Acknowledge Customer',      max:10, section:'CX Care'},
+  {label:'Asked Relevant Questions',  max:2,  section:'CX Care'},
+  {label:'Customer Verification',     max:5,  section:'Resolution'},
+  {label:'Available Solutions',       max:15, section:'Resolution'},
+  {label:'Confirmed Resolution',      max:5,  section:'Resolution'},
+  {label:'Managed Expectations',      max:10, section:'Resolution'},
+  {label:'Went Extra Mile',           max:10, section:'Resolution'},
+  {label:'Additional Observations',   max:5,  section:'Resolution'},
+  {label:'CRM Notation',              max:10, section:'Closing'},
+  {label:'Further Assistance',        max:5,  section:'Closing'},
+  {label:'Closing Script',            max:5,  section:'Closing'},
+];
 
-document.getElementById('api-key').addEventListener('change', e => {
-  localStorage.setItem(API_KEY_KEY, e.target.value);
-});
+const CLR = {
+  g:'#2d8a42', gl:'#d6f0dc',
+  a:'#c77a06', al:'#fef3c7',
+  r:'#c42020', rl:'#fee2e2',
+  b:'#1a44c8', bl:'#dbeafe',
+  o:'#ea7316',
+  mu:'#5a7060', bd:'#cce8d2',
+};
 
-// ── LOAD FROM GOOGLE SHEET ────────────────────────────────────
-function loadFromSheet() {
-  const url = document.getElementById('sheet-url').value.trim();
-  if (!url) return alert('Please paste the Google Sheet CSV URL first.');
-  localStorage.setItem(SHEET_URL_KEY, url);
-  loadData(url);
-}
+let all = [], filtered = [], charts = {};
 
-function loadData(url) {
-  const sheetUrl = url || localStorage.getItem(SHEET_URL_KEY);
-  if (!sheetUrl) return;
-
-  document.getElementById('last-updated').textContent = 'Loading...';
-
-  Papa.parse(sheetUrl, {
-    download: true,
-    header: false,
-    skipEmptyLines: true,
-    complete: (results) => {
-      const rows = results.data.slice(1); // skip header
-      allRows = rows.map(parseRow).filter(r => r !== null);
-      document.getElementById('last-updated').textContent =
-        'Updated ' + new Date().toLocaleTimeString();
-      document.getElementById('config-banner').style.display = 'none';
-      populateAgentFilter();
-      applyFilters();
-    },
-    error: (err) => {
-      document.getElementById('last-updated').textContent = 'Error loading';
-      alert('Could not load Sheet. Make sure it is shared publicly (Anyone with link can view) and the URL ends with &output=csv or export?format=csv\n\nError: ' + err.message);
-    }
-  });
+// ── FETCH FROM SHEETS API ─────────────────────────────────────
+async function loadData() {
+  document.getElementById('last-upd').textContent = 'Loading…';
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Raw%20Data?key=${API_KEY}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    const rows = (json.values || []).slice(1);
+    all = rows.map(parseRow).filter(Boolean);
+    document.getElementById('last-upd').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    buildAgentFilter();
+    applyFilters();
+  } catch(e) {
+    document.getElementById('last-upd').textContent = 'Error: ' + e.message;
+    console.error(e);
+    if (!all.length) loadDemo();
+  }
 }
 
 function parseRow(r) {
-  if (!r[COL.AGENT]) return null;
+  if (!r[C.AGENT]) return null;
+  const scores = [C.S_GREETING,C.S_WILLINGNESS,C.S_EMPATHY,C.S_ACKNOWLEDGE,
+    C.S_QUESTIONS,C.S_VERIFICATION,C.S_SOLUTIONS,C.S_CONFIRMED,
+    C.S_EXPECTATIONS,C.S_EXTRA_MILE,C.S_OBSERVATIONS,C.S_CRM,C.S_FURTHER,C.S_CLOSING
+  ].map(i => parseFloat(r[i]) || 0);
   return {
-    timestamp:    r[COL.TIMESTAMP] || '',
-    evaluator:    r[COL.EVALUATOR] || '',
-    agent:        r[COL.AGENT] || '',
-    type:         r[COL.TYPE] || '',
-    date:         r[COL.DATE] || '',
-    auditDate:    r[COL.AUDIT_DATE] || '',
-    supervisor:   r[COL.SUPERVISOR] || '',
-    ccScore:      parseFloat(r[COL.TOTAL_CC])  || 0,
-    resScore:     parseFloat(r[COL.TOTAL_RES]) || 0,
-    clsScore:     parseFloat(r[COL.TOTAL_CLS]) || 0,
-    criticalFlag: (r[COL.CRITICAL_FLAG] || '').toUpperCase() === 'YES',
-    criticalDetail: r[COL.CRITICAL_DETAIL] || '',
-    finalScore:   parseFloat(r[COL.FINAL_SCORE]) || 0,
-    rating:       r[COL.RATING] || '',
-    wentWell:     r[COL.WENT_WELL] || '',
-    couldBetter:  r[COL.COULD_BETTER] || '',
+    ts:        r[C.TIMESTAMP]  || '',
+    evaluator: r[C.EVALUATOR]  || '',
+    agent:     r[C.AGENT]      || '',
+    type:      r[C.TYPE]       || '',
+    date:      r[C.DATE]       || '',
+    auditDate: r[C.AUDIT_DATE] || '',
+    supervisor:r[C.SUPERVISOR] || '',
+    scores,
+    ccScore:   parseFloat(r[C.TOTAL_CC])   || 0,
+    resScore:  parseFloat(r[C.TOTAL_RES])  || 0,
+    clsScore:  parseFloat(r[C.TOTAL_CLS])  || 0,
+    critFlag:  (r[C.CRIT_FLAG] || '').toUpperCase() === 'YES',
+    critDetail:r[C.CRIT_DETAIL]|| '',
+    finalScore:parseFloat(r[C.FINAL_SCORE])|| 0,
+    rating:    r[C.RATING]     || '',
+    wentWell:  r[C.WENT_WELL]  || '',
+    couldBetter:r[C.COULD_BETTER]||'',
   };
 }
 
-// ── DEMO DATA (when no sheet loaded) ─────────────────────────
-function loadDemoData() {
+// ── DEMO DATA ─────────────────────────────────────────────────
+function loadDemo() {
   const agents = ['Maria Seba','Julian Mendivil','Carlos Ruiz','Ana Torres','Luis Gomez','Sofia Herrera'];
-  const evaluators = ['Sara Seba','QA Team'];
-  const types = ['Inbound','Outbound','Ticket','Email'];
-  const ratings = (s) => s >= 80 ? 'Achieved' : s >= 40 ? 'Developing' : 'Needs Support';
-  const errors = ['Rudeness / Unprofessional behavior','Wrong or misleading information','No customer/order verification','Improper hang up'];
-
-  allRows = Array.from({length: 60}, (_, i) => {
-    const cc  = Math.round(Math.random()*28 + 2);
-    const res = Math.round(Math.random()*44 + 6);
-    const cls = Math.round(Math.random()*18 + 2);
-    const total = cc + res + cls;
-    const hasCrit = Math.random() < 0.05;
-    const score = hasCrit ? 0 : total;
-    const d = new Date(2026, 0, 1 + Math.floor(i * 1.5));
-    return {
-      timestamp: d.toISOString(),
-      evaluator: evaluators[i % 2],
-      agent: agents[i % agents.length],
-      type: types[i % types.length],
-      date: d.toLocaleDateString(),
-      auditDate: d.toLocaleDateString(),
-      supervisor: 'Sara Seba',
-      ccScore: cc, resScore: res, clsScore: cls,
-      criticalFlag: hasCrit,
-      criticalDetail: hasCrit ? errors[Math.floor(Math.random()*errors.length)] : '',
-      finalScore: score,
-      rating: ratings(score),
-      wentWell: '', couldBetter: '',
-    };
+  const evals  = ['sara@etags.com','qa@etags.com'];
+  const types  = ['Inbound','Outbound','Ticket','Email'];
+  const maxes  = [2,8,8,10,2,5,15,5,10,10,5,10,5,5];
+  const errs   = ['Rudeness / Unprofessional behavior','Wrong or misleading information',
+                  'No customer/order verification','Improper hang up'];
+  all = Array.from({length:80},(_,i)=>{
+    const s = maxes.map(m=>parseFloat((Math.random()*m).toFixed(1)));
+    const cc=s.slice(0,5).reduce((a,b)=>a+b,0),res=s.slice(5,11).reduce((a,b)=>a+b,0),
+          cls=s.slice(11).reduce((a,b)=>a+b,0);
+    const hasCrit=Math.random()<0.06;
+    const fs=hasCrit?0:parseFloat((cc+res+cls).toFixed(1));
+    const rat=fs>=80?'Achieved':fs>=40?'Developing':'Needs Support';
+    const d=new Date(2026,0,1+Math.floor(i*1.2));
+    return {ts:d.toISOString(),evaluator:evals[i%2],agent:agents[i%agents.length],
+      type:types[i%types.length],date:d.toLocaleDateString(),auditDate:d.toLocaleDateString(),
+      supervisor:'Sara Seba',scores:s,ccScore:parseFloat(cc.toFixed(1)),
+      resScore:parseFloat(res.toFixed(1)),clsScore:parseFloat(cls.toFixed(1)),
+      critFlag:hasCrit,critDetail:hasCrit?errs[Math.floor(Math.random()*errs.length)]:'',
+      finalScore:fs,rating:rat,wentWell:'',couldBetter:''};
   });
-
-  document.getElementById('last-updated').textContent = 'Demo data loaded';
-  document.getElementById('config-banner').style.background = '#f0faf2';
-  document.querySelector('#config-banner p').textContent = '📊 Demo mode — paste your Sheet URL to load real data';
-  populateAgentFilter();
+  document.getElementById('last-upd').textContent = 'Demo data';
+  buildAgentFilter();
   applyFilters();
 }
 
 // ── FILTERS ───────────────────────────────────────────────────
-function populateAgentFilter() {
-  const sel = document.getElementById('filter-agent');
-  const agents = [...new Set(allRows.map(r => r.agent))].sort();
+function buildAgentFilter() {
+  const sel = document.getElementById('f-agent');
+  const agents = [...new Set(all.map(r=>r.agent))].sort();
   sel.innerHTML = '<option value="all">All agents</option>';
-  agents.forEach(a => {
-    const opt = document.createElement('option');
-    opt.value = a; opt.textContent = a;
-    sel.appendChild(opt);
-  });
+  agents.forEach(a=>{ const o=document.createElement('option'); o.value=o.textContent=a; sel.appendChild(o); });
 }
 
 function applyFilters() {
-  const period = document.getElementById('filter-period').value;
-  const agent  = document.getElementById('filter-agent').value;
-  const type   = document.getElementById('filter-type').value;
+  const period = document.getElementById('f-period').value;
+  const agent  = document.getElementById('f-agent').value;
+  const type   = document.getElementById('f-type').value;
+  const rating = document.getElementById('f-rating').value;
   const now    = new Date();
 
-  filteredRows = allRows.filter(r => {
-    if (agent !== 'all' && r.agent !== agent) return false;
-    if (type  !== 'all' && r.type  !== type)  return false;
+  filtered = all.filter(r => {
+    if (agent  !== 'all' && r.agent  !== agent)  return false;
+    if (type   !== 'all' && r.type   !== type)   return false;
+    if (rating !== 'all' && r.rating !== rating) return false;
     if (period !== 'all') {
-      const d = new Date(r.auditDate || r.timestamp);
+      const d = new Date(r.auditDate || r.ts);
       if (isNaN(d)) return true;
-      if (period === 'this-month')  return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-      if (period === 'last-month') {
-        const lm = new Date(now.getFullYear(), now.getMonth()-1, 1);
-        return d.getMonth() === lm.getMonth() && d.getFullYear() === lm.getFullYear();
-      }
-      if (period === 'last-30') return (now - d) <= 30*864e5;
-      if (period === 'last-90') return (now - d) <= 90*864e5;
+      if (period === 'this-month')  return d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear();
+      if (period === 'last-month') { const lm=new Date(now.getFullYear(),now.getMonth()-1,1); return d.getMonth()===lm.getMonth()&&d.getFullYear()===lm.getFullYear(); }
+      if (period === 'last-30') return (now-d)<=30*864e5;
+      if (period === 'last-90') return (now-d)<=90*864e5;
     }
     return true;
   });
 
-  document.getElementById('record-count').textContent = filteredRows.length + ' evaluations';
+  document.getElementById('rec-count').textContent = filtered.length + ' evaluations';
   renderAll();
 }
 
+// ── UTILS ─────────────────────────────────────────────────────
+const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
+const pct = (n,t) => t ? Math.round(n/t*100)+'%' : '0%';
+function ratingColor(s) { return s>=80?CLR.g:s>=40?CLR.a:CLR.r; }
+function ratingClass(r) { return r==='Achieved'?'pill-a':r==='Developing'?'pill-d':'pill-n'; }
+function ratingBadgeClass(r) { return r==='Achieved'?'bg':r==='Developing'?'ba':'br'; }
+function killChart(k) { if(charts[k]){ charts[k].destroy(); delete charts[k]; } }
+
 // ── RENDER ALL ────────────────────────────────────────────────
 function renderAll() {
-  renderKPIs();
-  renderTrendChart();
-  renderRatingChart();
-  renderAgentTable();
-  renderSectionBars();
-  renderAgentBarChart();
-  renderCriticalErrors();
-  renderByTypeChart();
-  renderDistributionChart();
-  renderEvaluatorChart();
+  renderKPIs(); renderTrend(); renderDonut(); renderAgentTable();
+  renderSectionBars(); renderAgentBar(); renderCriteria();
+  renderCritErrors(); renderDistribution(); renderByType();
+  renderPassRate(); renderEvaluator();
 }
 
 // ── KPIs ──────────────────────────────────────────────────────
 function renderKPIs() {
-  const rows = filteredRows;
-  if (!rows.length) return;
-
-  const scores = rows.map(r => r.finalScore);
-  const avg = Math.round(scores.reduce((a,b)=>a+b,0) / scores.length);
-  const achieved  = rows.filter(r => r.rating === 'Achieved').length;
-  const developing= rows.filter(r => r.rating === 'Developing').length;
-  const needs     = rows.filter(r => r.rating === 'Needs Support').length;
-  const agents    = new Set(rows.map(r => r.agent)).size;
-
-  document.getElementById('kpi-avg').textContent = avg + '%';
-  document.getElementById('kpi-achieved').textContent = achieved;
-  document.getElementById('kpi-developing').textContent = developing;
-  document.getElementById('kpi-needs').textContent = needs;
-  document.getElementById('kpi-total').textContent = rows.length;
-
-  const pct = (n) => Math.round(n/rows.length*100) + '%';
-  document.getElementById('kpi-achieved-pct').textContent = pct(achieved) + ' of evaluations';
-  document.getElementById('kpi-developing-pct').textContent = pct(developing) + ' of evaluations';
-  document.getElementById('kpi-needs-pct').textContent = pct(needs) + ' of evaluations';
-  document.getElementById('kpi-agents-count').textContent = agents + ' agents evaluated';
-
-  const badge = document.getElementById('kpi-avg-badge');
-  const cls = avg >= 80 ? 'badge-green' : avg >= 40 ? 'badge-amber' : 'badge-red';
-  const lbl = avg >= 80 ? 'Achieved' : avg >= 40 ? 'Developing' : 'Needs Support';
-  badge.innerHTML = `<span class="kpi-badge ${cls}">${lbl}</span>`;
+  const rows=filtered; if(!rows.length) return;
+  const scores=rows.map(r=>r.finalScore);
+  const mean=avg(scores), ach=rows.filter(r=>r.rating==='Achieved').length,
+        dev=rows.filter(r=>r.rating==='Developing').length,
+        ns=rows.filter(r=>r.rating==='Needs Support').length,
+        agents=new Set(rows.map(r=>r.agent)).size;
+  const m=Math.round(mean);
+  document.getElementById('k-avg').textContent=m+'%';
+  document.getElementById('k-ach').textContent=ach;
+  document.getElementById('k-dev').textContent=dev;
+  document.getElementById('k-need').textContent=ns;
+  document.getElementById('k-total').textContent=rows.length;
+  document.getElementById('k-ach-p').textContent=pct(ach,rows.length)+' of evals · 80–100%';
+  document.getElementById('k-dev-p').textContent=pct(dev,rows.length)+' of evals · 40–79%';
+  document.getElementById('k-need-p').textContent=pct(ns,rows.length)+' of evals · 0–39%';
+  document.getElementById('k-agents').textContent=agents+' agent'+(agents!==1?'s':'')+' evaluated';
+  const rat=m>=80?'Achieved':m>=40?'Developing':'Needs Support';
+  const bc=m>=80?'bg':m>=40?'ba':'br';
+  document.getElementById('k-avg-badge').innerHTML=`<span class="badge ${bc}">${rat}</span>`;
 }
 
-// ── TREND CHART ───────────────────────────────────────────────
-function renderTrendChart() {
-  const byDate = {};
-  filteredRows.forEach(r => {
-    const d = r.auditDate || r.date || 'Unknown';
-    if (!byDate[d]) byDate[d] = [];
-    byDate[d].push(r.finalScore);
-  });
-  const labels = Object.keys(byDate).sort();
-  const data   = labels.map(d => Math.round(byDate[d].reduce((a,b)=>a+b,0)/byDate[d].length));
-
-  const trend = data.length >= 2 ? data[data.length-1] - data[0] : 0;
-  const badge = document.getElementById('trend-badge');
-  badge.textContent = (trend >= 0 ? '▲ +' : '▼ ') + trend + '%';
-  badge.style.background = trend >= 0 ? C.greenL : C.redL;
-  badge.style.color = trend >= 0 ? C.green : C.red;
-  badge.style.border = 'none';
-
-  destroyChart('trend');
-  charts.trend = new Chart(document.getElementById('chart-trend'), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Avg Score',
-        data,
-        borderColor: C.green,
-        backgroundColor: 'rgba(45,138,66,0.08)',
-        borderWidth: 2.5,
-        pointBackgroundColor: C.green,
-        pointRadius: 4,
-        tension: 0.35,
-        fill: true,
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + '%' } }
-      },
-      scales: {
-        y: {
-          min: 0, max: 100,
-          grid: { color: '#f0faf2' },
-          ticks: { callback: v => v + '%', font: { size: 10 }, color: C.muted }
-        },
-        x: {
-          grid: { display: false },
-          ticks: { font: { size: 10 }, color: C.muted, maxTicksLimit: 8 }
-        }
-      }
-    }
+// ── TREND ─────────────────────────────────────────────────────
+function renderTrend() {
+  const byDate={};
+  filtered.forEach(r=>{ const d=r.auditDate||r.date||'?'; if(!byDate[d]) byDate[d]=[]; byDate[d].push(r.finalScore); });
+  const labels=Object.keys(byDate).sort();
+  const data=labels.map(d=>parseFloat(avg(byDate[d]).toFixed(1)));
+  const trend=data.length>=2?data[data.length-1]-data[0]:0;
+  const chip=document.getElementById('trend-chip');
+  chip.textContent=(trend>=0?'▲ +':'▼ ')+trend.toFixed(1)+'%';
+  chip.style.background=trend>=0?CLR.gl:CLR.rl;
+  chip.style.color=trend>=0?CLR.g:CLR.r;
+  chip.style.border='none';
+  killChart('trend');
+  charts.trend=new Chart(document.getElementById('c-trend'),{
+    type:'line',
+    data:{labels,datasets:[{label:'Avg Score',data,borderColor:CLR.g,backgroundColor:'rgba(45,138,66,0.07)',
+      borderWidth:2.5,pointBackgroundColor:CLR.g,pointRadius:3.5,tension:.35,fill:true}]},
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+      scales:{y:{min:0,max:100,grid:{color:'#f0faf2'},ticks:{callback:v=>v+'%',font:{size:10},color:CLR.mu}},
+               x:{grid:{display:false},ticks:{font:{size:10},color:CLR.mu,maxTicksLimit:8}}}}
   });
 }
 
-// ── RATING DOUGHNUT ───────────────────────────────────────────
-function renderRatingChart() {
-  const achieved  = filteredRows.filter(r => r.rating === 'Achieved').length;
-  const developing= filteredRows.filter(r => r.rating === 'Developing').length;
-  const needs     = filteredRows.filter(r => r.rating === 'Needs Support').length;
-
-  destroyChart('rating');
-  charts.rating = new Chart(document.getElementById('chart-rating'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Achieved','Developing','Needs Support'],
-      datasets: [{
-        data: [achieved, developing, needs],
-        backgroundColor: [C.green, C.amber, C.red],
-        borderWidth: 2,
-        borderColor: '#fff',
-        hoverOffset: 4,
-      }]
-    },
-    options: {
-      responsive: true,
-      cutout: '68%',
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { font: { size: 11 }, padding: 12, color: '#2c3d2f' }
-        },
-        tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.raw } }
-      }
-    }
+// ── DONUT ─────────────────────────────────────────────────────
+function renderDonut() {
+  const a=filtered.filter(r=>r.rating==='Achieved').length,
+        d=filtered.filter(r=>r.rating==='Developing').length,
+        n=filtered.filter(r=>r.rating==='Needs Support').length;
+  killChart('donut');
+  charts.donut=new Chart(document.getElementById('c-donut'),{
+    type:'doughnut',
+    data:{labels:['Achieved','Developing','Needs Support'],
+      datasets:[{data:[a,d,n],backgroundColor:[CLR.g,CLR.a,CLR.r],borderWidth:2,borderColor:'#fff',hoverOffset:4}]},
+    options:{responsive:true,cutout:'70%',
+      plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:10,color:CLR.mu}},
+               tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw}}}}
   });
 }
 
 // ── AGENT TABLE ───────────────────────────────────────────────
 function renderAgentTable() {
-  const byAgent = {};
-  filteredRows.forEach(r => {
-    if (!byAgent[r.agent]) byAgent[r.agent] = [];
-    byAgent[r.agent].push(r);
-  });
+  const byA={};
+  filtered.forEach(r=>{ if(!byA[r.agent]) byA[r.agent]=[]; byA[r.agent].push(r); });
+  const agents=Object.entries(byA).map(([n,rows])=>{
+    const sc=avg(rows.map(r=>r.finalScore)),
+          cc=avg(rows.map(r=>r.ccScore)),
+          rs=avg(rows.map(r=>r.resScore)),
+          cl=avg(rows.map(r=>r.clsScore)),
+          crits=rows.filter(r=>r.critFlag).length;
+    return {n,cnt:rows.length,sc:parseFloat(sc.toFixed(1)),
+      cc:parseFloat(cc.toFixed(1)),rs:parseFloat(rs.toFixed(1)),cl:parseFloat(cl.toFixed(1)),crits};
+  }).sort((a,b)=>b.sc-a.sc);
 
-  const agents = Object.entries(byAgent).map(([name, rows]) => ({
-    name,
-    count: rows.length,
-    avg: Math.round(rows.reduce((s,r)=>s+r.finalScore,0)/rows.length),
-    cc:  Math.round(rows.reduce((s,r)=>s+r.ccScore,0)/rows.length),
-    res: Math.round(rows.reduce((s,r)=>s+r.resScore,0)/rows.length),
-    cls: Math.round(rows.reduce((s,r)=>s+r.clsScore,0)/rows.length),
-  })).sort((a,b) => b.avg - a.avg);
-
-  const tbody = document.getElementById('agent-tbody');
-  if (!agents.length) {
-    tbody.innerHTML = '<tr><td colspan="8"><div class="state-box"><div class="state-text">No data in range</div></div></td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = agents.map((a, i) => {
-    const rating = a.avg >= 80 ? 'Achieved' : a.avg >= 40 ? 'Developing' : 'Needs Support';
-    const pc = rating === 'Achieved' ? 'pill-achieved' : rating === 'Developing' ? 'pill-developing' : 'pill-needs';
-    const rank = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1);
+  const tbody=document.getElementById('t-agents');
+  if(!agents.length){ tbody.innerHTML='<tr><td colspan="9"><div class="state">No data in range</div></td></tr>'; return; }
+  const medals=['🥇','🥈','🥉'];
+  tbody.innerHTML=agents.map((a,i)=>{
+    const rat=a.sc>=80?'Achieved':a.sc>=40?'Developing':'Needs Support';
+    const pc=ratingClass(rat); const bc=ratingBadgeClass(rat);
+    const rank=i<3?medals[i]:(i+1);
+    const critCell=a.crits>0?`<span class="badge br">${a.crits} ⚠️</span>`:`<span style="color:var(--muted);font-size:11px;">0</span>`;
     return `<tr>
       <td style="color:var(--muted);font-size:12px;">${rank}</td>
-      <td class="agent-name">${a.name}</td>
-      <td style="color:var(--muted)">${a.count}</td>
-      <td><span class="score-pill ${pc}">${a.avg}%</span></td>
-      <td style="font-family:'DM Mono',monospace;font-size:11px;">${a.cc}/30</td>
-      <td style="font-family:'DM Mono',monospace;font-size:11px;">${a.res}/50</td>
-      <td style="font-family:'DM Mono',monospace;font-size:11px;">${a.cls}/20</td>
-      <td><span class="kpi-badge ${pc === 'pill-achieved' ? 'badge-green' : pc === 'pill-developing' ? 'badge-amber' : 'badge-red'}">${rating}</span></td>
+      <td class="agent-n">${a.n}</td>
+      <td class="mono">${a.cnt}</td>
+      <td><span class="pill ${pc}">${a.sc}%</span></td>
+      <td class="mono">${a.cc}/30</td>
+      <td class="mono">${a.rs}/50</td>
+      <td class="mono">${a.cl}/20</td>
+      <td>${critCell}</td>
+      <td><span class="badge ${bc}">${rat}</span></td>
     </tr>`;
   }).join('');
 }
 
 // ── SECTION BARS ──────────────────────────────────────────────
 function renderSectionBars() {
-  const rows = filteredRows;
-  if (!rows.length) return;
-
-  const avgCC  = (rows.reduce((s,r)=>s+r.ccScore,0)/rows.length).toFixed(1);
-  const avgRes = (rows.reduce((s,r)=>s+r.resScore,0)/rows.length).toFixed(1);
-  const avgCls = (rows.reduce((s,r)=>s+r.clsScore,0)/rows.length).toFixed(1);
-
-  const sections = [
-    { label: 'CX Care',    val: avgCC,  max: 30, color: '#1d4ed8' },
-    { label: 'Resolution', val: avgRes, max: 50, color: C.green },
-    { label: 'Closing',    val: avgCls, max: 20, color: '#f97316' },
+  const rows=filtered; if(!rows.length) return;
+  const cc=avg(rows.map(r=>r.ccScore)),
+        rs=avg(rows.map(r=>r.resScore)),
+        cl=avg(rows.map(r=>r.clsScore));
+  const secs=[
+    {lbl:'CX Experience — Customer Care',val:cc.toFixed(1),max:30,clr:CLR.b},
+    {lbl:'Service & Knowledge — Resolution',val:rs.toFixed(1),max:50,clr:CLR.g},
+    {lbl:'Service & Knowledge — Closing',   val:cl.toFixed(1),max:20,clr:CLR.o},
   ];
-
-  document.getElementById('section-bars').innerHTML = sections.map(s => `
-    <div class="progress-row">
-      <div class="progress-label">
-        <span>${s.label}</span>
-        <span>${s.val} / ${s.max}</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" style="width:${(s.val/s.max*100).toFixed(1)}%;background:${s.color};"></div>
-      </div>
-    </div>
-  `).join('');
+  document.getElementById('sec-bars').innerHTML=secs.map(s=>`
+    <div class="pr-row">
+      <div class="pr-lbl"><span>${s.lbl}</span><span>${s.val} / ${s.max}</span></div>
+      <div class="pr-track"><div class="pr-fill" style="width:${(s.val/s.max*100).toFixed(1)}%;background:${s.clr};"></div></div>
+    </div>`).join('');
 }
 
-// ── AGENT BAR CHART ───────────────────────────────────────────
-function renderAgentBarChart() {
-  const byAgent = {};
-  filteredRows.forEach(r => {
-    if (!byAgent[r.agent]) byAgent[r.agent] = [];
-    byAgent[r.agent].push(r.finalScore);
+// ── AGENT BAR ─────────────────────────────────────────────────
+function renderAgentBar() {
+  const byA={};
+  filtered.forEach(r=>{ if(!byA[r.agent]) byA[r.agent]=[]; byA[r.agent].push(r.finalScore); });
+  const agents=Object.entries(byA).map(([n,s])=>{return {n,sc:parseFloat(avg(s).toFixed(1))};}).sort((a,b)=>b.sc-a.sc);
+  killChart('agents');
+  charts.agents=new Chart(document.getElementById('c-agents'),{
+    type:'bar',
+    data:{labels:agents.map(a=>a.n.split(' ')[0]),
+      datasets:[{data:agents.map(a=>a.sc),backgroundColor:agents.map(a=>ratingColor(a.sc)),borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+      scales:{y:{min:0,max:100,grid:{color:'#f0faf2'},ticks:{callback:v=>v+'%',font:{size:10},color:CLR.mu}},
+               x:{grid:{display:false},ticks:{font:{size:10},color:CLR.mu}}}}
   });
-  const agents = Object.entries(byAgent)
-    .map(([n, s]) => ({ name: n, avg: Math.round(s.reduce((a,b)=>a+b,0)/s.length) }))
-    .sort((a,b) => b.avg - a.avg);
+}
 
-  destroyChart('agents');
-  charts.agents = new Chart(document.getElementById('chart-agents'), {
-    type: 'bar',
-    data: {
-      labels: agents.map(a => a.name.split(' ')[0]),
-      datasets: [{
-        label: 'Avg Score',
-        data: agents.map(a => a.avg),
-        backgroundColor: agents.map(a =>
-          a.avg >= 80 ? C.green : a.avg >= 40 ? C.amber : C.red
-        ),
-        borderRadius: 6,
-        borderSkipped: false,
-      }]
+// ── CRITERIA DEEP DIVE ────────────────────────────────────────
+function renderCriteria() {
+  const rows=filtered; if(!rows.length) return;
+  const avgs=CRITERIA.map((_,i)=>parseFloat(avg(rows.map(r=>r.scores[i])).toFixed(2)));
+  const pcts=avgs.map((v,i)=>parseFloat((v/CRITERIA[i].max*100).toFixed(1)));
+  const colors=pcts.map(p=>p>=80?CLR.g:p>=40?CLR.a:CLR.r);
+  killChart('criteria');
+  charts.criteria=new Chart(document.getElementById('c-criteria'),{
+    type:'bar',
+    data:{
+      labels:CRITERIA.map(c=>c.label.length>18?c.label.slice(0,16)+'…':c.label),
+      datasets:[
+        {label:'Avg Score',data:avgs,backgroundColor:colors,borderRadius:4,borderSkipped:false,barPercentage:.6},
+        {label:'Max Weight',data:CRITERIA.map(c=>c.max),backgroundColor:'rgba(0,0,0,0.05)',borderRadius:4,borderSkipped:false,barPercentage:.6},
+      ]
     },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + '%' } }
+    options:{responsive:true,plugins:{
+        legend:{display:true,position:'top',labels:{font:{size:10},padding:8,color:CLR.mu}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+(c.dataset.label==='Avg Score'?'%':'% max')}}
       },
-      scales: {
-        y: {
-          min: 0, max: 100,
-          grid: { color: '#f0faf2' },
-          ticks: { callback: v => v + '%', font: { size: 10 }, color: C.muted }
-        },
-        x: { grid: { display: false }, ticks: { font: { size: 10 }, color: C.muted } }
-      }
-    }
+      scales:{y:{beginAtZero:true,grid:{color:'#f0faf2'},ticks:{font:{size:9},color:CLR.mu}},
+               x:{grid:{display:false},ticks:{font:{size:8.5},color:CLR.mu}}}}
   });
 }
 
 // ── CRITICAL ERRORS ───────────────────────────────────────────
-function renderCriticalErrors() {
-  const counts = {};
-  filteredRows.forEach(r => {
-    if (r.criticalFlag && r.criticalDetail) {
-      r.criticalDetail.split(',').forEach(e => {
-        const k = e.trim();
-        if (k && k !== 'None') counts[k] = (counts[k] || 0) + 1;
-      });
-    }
-  });
-
-  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
-  const container = document.getElementById('critical-errors-list');
-
-  if (!sorted.length) {
-    container.innerHTML = '<div class="state-box"><div class="state-text">✅ No critical errors in this range</div></div>';
-    return;
-  }
-
-  const max = sorted[0][1];
-  container.innerHTML = sorted.map(([name, count]) => `
-    <div class="error-row">
-      <span class="error-name">${name}</span>
-      <span class="error-count">${count}</span>
-      <div class="error-bar-wrap">
-        <div class="error-bar-fill" style="width:${Math.round(count/max*100)}%"></div>
-      </div>
-    </div>
-  `).join('');
+function renderCritErrors() {
+  const counts={};
+  filtered.forEach(r=>{ if(r.critFlag&&r.critDetail) r.critDetail.split(',').forEach(e=>{ const k=e.trim(); if(k&&k!=='None') counts[k]=(counts[k]||0)+1; }); });
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const el=document.getElementById('err-list');
+  if(!sorted.length){ el.innerHTML='<div class="state">✅ No critical errors in this range</div>'; return; }
+  const max=sorted[0][1];
+  el.innerHTML=sorted.map(([n,c])=>`
+    <div class="err-row">
+      <span class="err-name">${n}</span>
+      <span class="err-cnt">${c}</span>
+      <div class="err-bar"><div class="err-bar-f" style="width:${Math.round(c/max*100)}%"></div></div>
+    </div>`).join('');
 }
 
-// ── BY TYPE CHART ─────────────────────────────────────────────
-function renderByTypeChart() {
-  const byType = {};
-  filteredRows.forEach(r => {
-    if (!byType[r.type]) byType[r.type] = [];
-    byType[r.type].push(r.finalScore);
-  });
-  const labels = Object.keys(byType);
-  const data   = labels.map(t => Math.round(byType[t].reduce((a,b)=>a+b,0)/byType[t].length));
-  const colors = ['#2d8a42','#1d4ed8','#f97316','#d97706','#dc2626'];
-
-  destroyChart('byType');
-  charts.byType = new Chart(document.getElementById('chart-by-type'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        data,
-        backgroundColor: labels.map((_, i) => colors[i % colors.length]),
-        borderRadius: 6,
-        borderSkipped: false,
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ' ' + ctx.raw + '%' } } },
-      scales: {
-        y: { min:0, max:100, grid:{color:'#f0faf2'}, ticks:{callback: v=>v+'%', font:{size:10}, color:C.muted} },
-        x: { grid:{display:false}, ticks:{font:{size:10}, color:C.muted} }
-      }
-    }
+// ── DISTRIBUTION ──────────────────────────────────────────────
+function renderDistribution() {
+  const bkts={'0–19':0,'20–39':0,'40–59':0,'60–79':0,'80–100':0};
+  filtered.forEach(r=>{ const s=r.finalScore; if(s<20)bkts['0–19']++; else if(s<40)bkts['20–39']++; else if(s<60)bkts['40–59']++; else if(s<80)bkts['60–79']++; else bkts['80–100']++; });
+  killChart('dist');
+  charts.dist=new Chart(document.getElementById('c-dist'),{
+    type:'bar',
+    data:{labels:Object.keys(bkts),datasets:[{data:Object.values(bkts),
+      backgroundColor:[CLR.r,CLR.r,CLR.a,CLR.a,CLR.g],borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' evals'}}},
+      scales:{y:{beginAtZero:true,grid:{color:'#f0faf2'},ticks:{font:{size:10},color:CLR.mu}},
+               x:{grid:{display:false},ticks:{font:{size:10},color:CLR.mu}}}}
   });
 }
 
-// ── DISTRIBUTION HISTOGRAM ────────────────────────────────────
-function renderDistributionChart() {
-  const buckets = { '0–19':0,'20–39':0,'40–59':0,'60–79':0,'80–100':0 };
-  filteredRows.forEach(r => {
-    const s = r.finalScore;
-    if (s < 20) buckets['0–19']++;
-    else if (s < 40) buckets['20–39']++;
-    else if (s < 60) buckets['40–59']++;
-    else if (s < 80) buckets['60–79']++;
-    else buckets['80–100']++;
-  });
-
-  destroyChart('distribution');
-  charts.distribution = new Chart(document.getElementById('chart-distribution'), {
-    type: 'bar',
-    data: {
-      labels: Object.keys(buckets),
-      datasets: [{
-        data: Object.values(buckets),
-        backgroundColor: [C.red, C.red, C.amber, C.amber, C.green],
-        borderRadius: 6, borderSkipped: false,
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>' '+ctx.raw+' evals'}} },
-      scales: {
-        y: { beginAtZero:true, grid:{color:'#f0faf2'}, ticks:{font:{size:10},color:C.muted} },
-        x: { grid:{display:false}, ticks:{font:{size:10},color:C.muted} }
-      }
-    }
+// ── BY TYPE ───────────────────────────────────────────────────
+function renderByType() {
+  const byT={};
+  filtered.forEach(r=>{ if(!byT[r.type]) byT[r.type]=[]; byT[r.type].push(r.finalScore); });
+  const labels=Object.keys(byT), data=labels.map(t=>parseFloat(avg(byT[t]).toFixed(1)));
+  const cols=[CLR.g,CLR.b,CLR.o,CLR.a,CLR.r];
+  killChart('type');
+  charts.type=new Chart(document.getElementById('c-type'),{
+    type:'bar',
+    data:{labels,datasets:[{data,backgroundColor:labels.map((_,i)=>cols[i%cols.length]),borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+      scales:{y:{min:0,max:100,grid:{color:'#f0faf2'},ticks:{callback:v=>v+'%',font:{size:10},color:CLR.mu}},
+               x:{grid:{display:false},ticks:{font:{size:10},color:CLR.mu}}}}
   });
 }
 
-// ── EVALUATOR CHART ───────────────────────────────────────────
-function renderEvaluatorChart() {
-  const byEval = {};
-  filteredRows.forEach(r => {
-    const k = r.evaluator || 'Unknown';
-    byEval[k] = (byEval[k] || 0) + 1;
-  });
-  const labels = Object.keys(byEval);
-  const data   = Object.values(byEval);
-
-  destroyChart('evaluator');
-  charts.evaluator = new Chart(document.getElementById('chart-evaluator'), {
-    type: 'doughnut',
-    data: {
-      labels,
-      datasets: [{
-        data,
-        backgroundColor: ['#2d8a42','#1d4ed8','#f97316','#d97706','#dc2626','#7c3aed'],
-        borderWidth: 2, borderColor: '#fff',
-      }]
-    },
-    options: {
-      responsive: true,
-      cutout: '60%',
-      plugins: {
-        legend: { position: 'bottom', labels: { font:{size:10}, padding:8, color:'#2c3d2f' } },
-        tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.raw + ' evals' } }
-      }
-    }
+// ── ACHIEVED RATE OVER TIME ───────────────────────────────────
+function renderPassRate() {
+  const byDate={};
+  filtered.forEach(r=>{ const d=r.auditDate||r.date||'?'; if(!byDate[d]) byDate[d]={total:0,ach:0}; byDate[d].total++; if(r.rating==='Achieved') byDate[d].ach++; });
+  const labels=Object.keys(byDate).sort();
+  const data=labels.map(d=>parseFloat((byDate[d].ach/byDate[d].total*100).toFixed(1)));
+  killChart('passrate');
+  charts.passrate=new Chart(document.getElementById('c-passrate'),{
+    type:'line',
+    data:{labels,datasets:[{label:'Achieved %',data,borderColor:CLR.b,backgroundColor:'rgba(26,68,200,0.06)',
+      borderWidth:2,pointBackgroundColor:CLR.b,pointRadius:3,tension:.35,fill:true}]},
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+      scales:{y:{min:0,max:100,grid:{color:'#f0faf2'},ticks:{callback:v=>v+'%',font:{size:10},color:CLR.mu}},
+               x:{grid:{display:false},ticks:{font:{size:10},color:CLR.mu,maxTicksLimit:8}}}}
   });
 }
 
-// ── DESTROY CHART HELPER ──────────────────────────────────────
-function destroyChart(key) {
-  if (charts[key]) { charts[key].destroy(); delete charts[key]; }
+// ── EVALUATOR WORKLOAD ────────────────────────────────────────
+function renderEvaluator() {
+  const byE={};
+  filtered.forEach(r=>{ const k=r.evaluator||'Unknown'; byE[k]=(byE[k]||0)+1; });
+  const labels=Object.keys(byE);
+  const cols=[CLR.g,CLR.b,CLR.o,CLR.a,CLR.r,'#7c3aed'];
+  killChart('eval');
+  charts.eval=new Chart(document.getElementById('c-eval'),{
+    type:'doughnut',
+    data:{labels,datasets:[{data:Object.values(byE),backgroundColor:labels.map((_,i)=>cols[i%cols.length]),borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,cutout:'60%',
+      plugins:{legend:{position:'bottom',labels:{font:{size:10},padding:8,color:CLR.mu}},
+               tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw+' evals'}}}}
+  });
 }
 
-// ── AI INSIGHTS ───────────────────────────────────────────────
-async function generateInsights() {
-  const apiKey = document.getElementById('api-key').value.trim();
-  if (!apiKey) {
-    alert('Please enter your Claude API Key in the field below the insights panel.');
-    return;
-  }
-  if (!filteredRows.length) {
-    alert('Load data first before generating insights.');
-    return;
-  }
-
-  const btn = document.getElementById('btn-ai');
-  const content = document.getElementById('ai-content');
-  btn.disabled = true;
-  btn.innerHTML = '⏳ Analyzing...';
-  content.innerHTML = '<em>Generating insights...</em>';
-
-  localStorage.setItem(API_KEY_KEY, apiKey);
-
-  // Build summary for Claude
-  const rows = filteredRows;
-  const avgScore = (rows.reduce((s,r)=>s+r.finalScore,0)/rows.length).toFixed(1);
-  const achieved  = rows.filter(r=>r.rating==='Achieved').length;
-  const developing= rows.filter(r=>r.rating==='Developing').length;
-  const needs     = rows.filter(r=>r.rating==='Needs Support').length;
-
-  const byAgent = {};
-  rows.forEach(r => {
-    if (!byAgent[r.agent]) byAgent[r.agent] = [];
-    byAgent[r.agent].push(r.finalScore);
-  });
-  const agentSummary = Object.entries(byAgent)
-    .map(([n,s]) => `${n}: ${(s.reduce((a,b)=>a+b,0)/s.length).toFixed(0)}% avg (${s.length} evals)`)
-    .join(', ');
-
-  const avgCC  = (rows.reduce((s,r)=>s+r.ccScore,0)/rows.length).toFixed(1);
-  const avgRes = (rows.reduce((s,r)=>s+r.resScore,0)/rows.length).toFixed(1);
-  const avgCls = (rows.reduce((s,r)=>s+r.clsScore,0)/rows.length).toFixed(1);
-
-  const critErrors = {};
-  rows.forEach(r => {
-    if (r.criticalFlag && r.criticalDetail) {
-      r.criticalDetail.split(',').forEach(e => {
-        const k = e.trim(); if(k&&k!=='None') critErrors[k]=(critErrors[k]||0)+1;
-      });
-    }
-  });
-  const critSummary = Object.entries(critErrors).length
-    ? Object.entries(critErrors).map(([k,v])=>`${k}(${v})`).join(', ')
-    : 'None';
-
-  const prompt = `You are a QA analytics expert for a BPO called eTags. Analyze this QA data and provide 3-4 concise, actionable insights in 120 words max. Be specific, use the numbers, and suggest concrete coaching actions.
-
-Data summary (${rows.length} evaluations):
-- Average QA Score: ${avgScore}%
-- Achieved: ${achieved} | Developing: ${developing} | Needs Support: ${needs}
-- Section averages: CX Care ${avgCC}/30, Resolution ${avgRes}/50, Closing ${avgCls}/20
-- Agent performance: ${agentSummary}
-- Critical errors: ${critSummary}
-
-Write in English. Be direct, no fluff. Format as 3-4 bullet points.`;
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 400,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.error?.message || 'API error ' + response.status);
-    }
-
-    const data = await response.json();
-    const text = data.content?.[0]?.text || 'No response';
-    content.innerHTML = text.replace(/\n/g,'<br>').replace(/•|\*/g,'<em>•</em>');
-  } catch (err) {
-    content.innerHTML = '⚠️ Error: ' + err.message + '<br><span style="font-size:11px;opacity:0.7">Note: The API key must be called from a server in production due to CORS. For local use, this works fine.</span>';
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v2M6.5 10v2M1 6.5h2M10 6.5h2M2.93 2.93l1.41 1.41M8.66 8.66l1.41 1.41M2.93 10.07l1.41-1.41M8.66 4.34l1.41-1.41" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg> Generate Insights';
-  }
-}
-
-// ── AUTO LOAD DEMO IF NO SHEET ────────────────────────────────
-setTimeout(() => {
-  if (!allRows.length && !localStorage.getItem(SHEET_URL_KEY)) loadDemoData();
-}, 800);
+// ── BOOT ─────────────────────────────────────────────────────
+loadData();
 </script>
 </body>
 </html>
