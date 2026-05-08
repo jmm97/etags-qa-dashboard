@@ -10,17 +10,19 @@
 :root{
   --bg:#0d1210;--bg2:#121915;--bg3:#182019;--bg4:#1e2820;
   --card:#161e17;--border:#253028;--border2:#2e3d30;
-  --g600:#2d8a42;--g500:#38a84f;--g400:#4fc265;--g300:#7dd491;--g200:#a8e4b5;--g100:#d4f0db;
+  --g600:#2d8a42;--g500:#38a84f;--g400:#4fc265;--g300:#7dd491;
   --ink:#dff0e3;--ink2:#a8c4ac;--ink3:#7a9b7e;--muted:#506855;
   --amber:#e8a030;--amberl:#221808;--red:#e55050;--redl:#220e0e;
   --blue:#5599f0;--bluel:#0d1825;--r:10px;--r-lg:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:14px;line-height:1.5;}
-.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.brand{display:flex;align-items:center;gap:11px;}
-.brand img{height:34px;width:auto;border-radius:5px;}
-.brand-name{font-size:17px;font-weight:700;color:var(--g300);letter-spacing:-.4px;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand img{height:42px;width:auto;border-radius:6px;}
+.brand-name{font-size:19px;font-weight:700;color:var(--g300);letter-spacing:-.4px;}
 .brand-sub{font-size:10px;color:var(--ink3);letter-spacing:1.2px;text-transform:uppercase;margin-top:3px;}
 .topbar-r{display:flex;align-items:center;gap:10px;}
 .live-dot{width:8px;height:8px;border-radius:50%;background:var(--g400);box-shadow:0 0 8px var(--g400);animation:blink 2.5s ease-in-out infinite;flex-shrink:0;}
@@ -31,6 +33,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-h
 .chip{background:var(--bg4);border:1px solid var(--border2);color:var(--ink3);padding:5px 12px;border-radius:20px;font-size:12px;font-family:'JetBrains Mono',monospace;}
 .btn{background:var(--g600);border:none;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .18s;display:flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;}
 .btn:hover{background:var(--g500);}
+
+/* ── FILTERS ── */
 .filters{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .flbl{font-size:11px;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px;}
 .sel{background:var(--bg4);border:1.5px solid var(--border2);border-radius:8px;padding:7px 11px;font-size:13px;color:var(--ink2);cursor:pointer;outline:none;font-family:'Outfit',sans-serif;}
@@ -38,11 +42,15 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-h
 .sel option{background:var(--bg3);}
 .sep{width:1px;height:20px;background:var(--border);}
 #rec{font-size:12px;color:var(--ink3);font-family:'JetBrains Mono',monospace;}
+
+/* ── MAIN ── */
 .main{padding:24px 28px 64px;max-width:1460px;margin:0 auto;}
 .ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;}
 .ph-title{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
 .ph-sub{font-size:13px;color:var(--ink3);margin-top:4px;}
 .ph-ts{font-size:12px;color:var(--ink3);font-family:'JetBrains Mono',monospace;}
+
+/* ── KPI STRIP ── */
 .kpi-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px;}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;position:relative;overflow:hidden;transition:border-color .2s,transform .18s;cursor:default;}
 .kpi:hover{border-color:var(--g600);transform:translateY(-2px);}
@@ -64,20 +72,42 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-h
 .ba{background:var(--amberl);color:var(--amber);border:1px solid rgba(232,160,48,.2);}
 .br{background:var(--redl);color:var(--red);border:1px solid rgba(229,80,80,.2);}
 .bb{background:var(--bluel);color:var(--blue);border:1px solid rgba(85,153,240,.2);}
+
+/* ── SKELETON ── */
 @keyframes shimmer{0%{background-position:-600px 0;}100%{background-position:600px 0;}}
 .sk{border-radius:6px;background:linear-gradient(90deg,var(--bg4) 25%,var(--bg3) 50%,var(--bg4) 75%);background-size:600px 100%;animation:shimmer 1.6s ease-in-out infinite;}
 .sk-row{display:flex;align-items:center;gap:10px;padding:11px 9px;border-bottom:1px solid rgba(255,255,255,.03);}
+
+/* ── DIVIDER ── */
 .divider{display:flex;align-items:center;gap:10px;margin:22px 0 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.3px;color:var(--ink3);}
 .divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── GRIDS ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
 .g31{display:grid;grid-template-columns:2.3fr 1fr;gap:14px;margin-bottom:14px;}
 .g21{display:grid;grid-template-columns:1.7fr 1fr;gap:14px;margin-bottom:14px;}
+
+/* ── CARDS ── */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;overflow:hidden;}
 .card-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
 .card-title{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.2px;}
 .card-sub{font-size:12px;color:var(--ink3);margin-top:3px;}
-.card-chip{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+
+/* ── TREND CHIP WITH TOOLTIP ── */
+.trend-chip-wrap{position:relative;display:inline-block;}
+.trend-chip{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;cursor:help;}
+.trend-tooltip{
+  display:none;position:absolute;right:0;top:calc(100% + 6px);
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:8px;padding:10px 13px;font-size:12px;color:var(--ink2);
+  width:240px;line-height:1.5;z-index:50;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+}
+.trend-chip-wrap:hover .trend-tooltip{display:block;}
+.tooltip-arrow{font-size:11px;color:var(--ink3);margin-bottom:3px;}
+
+/* ── TABLE ── */
 .tbl{width:100%;border-collapse:collapse;}
 .tbl thead tr{border-bottom:1px solid var(--border2);}
 .tbl thead th{padding:8px 10px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--ink3);}
@@ -90,25 +120,46 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-h
 .pd{background:var(--amberl);color:var(--amber);}
 .pn{background:var(--redl);color:var(--red);}
 .mono{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink3);}
+
+/* ── PROGRESS ── */
 .pr{margin-bottom:16px;}
 .pr-lbl{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
 .pr-lbl span:first-child{color:var(--ink2);font-weight:500;}
 .pr-lbl span:last-child{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink3);}
 .pr-track{background:var(--bg4);border-radius:4px;height:8px;overflow:hidden;}
 .pr-fill{height:8px;border-radius:4px;transition:width .7s cubic-bezier(.4,0,.2,1);}
+
+/* ── SIDE CARD (section averages + extra kpi) ── */
+.side-card{display:flex;flex-direction:column;gap:14px;}
+.mini-kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;flex:1;position:relative;overflow:hidden;}
+.mini-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0;}
+.mini-kpi.green::before{background:var(--g500);}
+.mini-kpi.red::before{background:var(--red);}
+.mini-kpi-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--ink3);margin-bottom:8px;}
+.mini-kpi-val{font-size:28px;font-weight:800;letter-spacing:-1px;line-height:1;}
+.mini-kpi.green .mini-kpi-val{color:var(--g300);}
+.mini-kpi.red .mini-kpi-val{color:var(--red);}
+.mini-kpi-sub{font-size:12px;color:var(--ink3);margin-top:5px;}
+
+/* ── ERRORS ── */
 .er{display:flex;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);gap:10px;}
 .er:last-child{border:none;}
 .er-name{flex:1;color:var(--ink2);font-size:13px;line-height:1.4;}
 .er-cnt{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;color:var(--red);min-width:22px;text-align:right;}
 .er-bar{width:68px;background:var(--redl);border-radius:3px;height:5px;overflow:hidden;flex-shrink:0;}
 .er-bar-f{background:var(--red);height:5px;border-radius:3px;}
+
+/* ── STATE ── */
 .state{text-align:center;padding:40px 16px;color:var(--ink3);font-size:13px;}
 .scroll{overflow-x:auto;}
+
+/* ── LOADING ── */
 #loading-overlay{display:none;position:fixed;inset:0;background:rgba(13,18,16,.88);backdrop-filter:blur(4px);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:20px;}
 #loading-overlay.visible{display:flex;}
 .loader-ring{width:48px;height:48px;border:3px solid var(--border2);border-top-color:var(--g400);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .loader-text{font-size:14px;color:var(--ink3);font-family:'JetBrains Mono',monospace;}
+
 @media(max-width:1100px){.kpi-strip{grid-template-columns:repeat(3,1fr);}.g2,.g3,.g31,.g21{grid-template-columns:1fr;}}
 @media(max-width:640px){.kpi-strip{grid-template-columns:1fr 1fr;}.main,.topbar,.filters{padding-left:14px;padding-right:14px;}}
 </style>
@@ -175,6 +226,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-h
     <div class="ph-ts" id="ph-ts">—</div>
   </div>
 
+  <!-- KPIs -->
   <div class="kpi-strip" id="kpi-strip">
     <div class="kpi ka"><div class="kpi-lbl">Team Avg Score</div><div class="sk" style="height:38px;width:80px;margin-bottom:8px;"></div><div class="sk" style="height:14px;width:110px;"></div></div>
     <div class="kpi kb"><div class="kpi-lbl">Achieved</div><div class="sk" style="height:38px;width:60px;margin-bottom:8px;"></div><div class="sk" style="height:14px;width:90px;"></div></div>
@@ -184,46 +236,136 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-h
   </div>
 
   <div class="divider">Performance overview</div>
+
+  <!-- ROW 1: Trend + Donut -->
   <div class="g2">
-    <div class="card"><div class="card-hdr"><div><div class="card-title">Score Trend</div><div class="card-sub">Average QA score over time</div></div><span class="card-chip bg" id="trend-chip">—</span></div><div id="sk-trend"><div class="sk" style="height:175px;border-radius:8px;"></div></div><canvas id="c-trend" height="175" style="display:none;"></canvas></div>
-    <div class="card"><div class="card-hdr"><div><div class="card-title">Rating Distribution</div><div class="card-sub">Achieved · Developing · Needs Support</div></div></div><div id="sk-donut" style="display:flex;align-items:center;justify-content:center;height:175px;"><div class="sk" style="width:155px;height:155px;border-radius:50%;"></div></div><div id="donut-wrap" style="display:none;height:175px;align-items:center;justify-content:center;"><canvas id="c-donut" style="max-width:185px;max-height:185px;"></canvas></div></div>
+    <div class="card">
+      <div class="card-hdr">
+        <div><div class="card-title">Score Trend</div><div class="card-sub">Average QA score over time</div></div>
+        <div class="trend-chip-wrap">
+          <span class="trend-chip bg" id="trend-chip">—</span>
+          <div class="trend-tooltip">
+            <div class="tooltip-arrow">ℹ Trend explanation</div>
+            <span id="trend-tooltip-text">Loading…</span>
+          </div>
+        </div>
+      </div>
+      <div id="sk-trend"><div class="sk" style="height:200px;border-radius:8px;"></div></div>
+      <canvas id="c-trend" height="200" style="display:none;"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div><div class="card-title">Rating Distribution</div><div class="card-sub">Achieved · Developing · Needs Support</div></div></div>
+      <div id="sk-donut" style="display:flex;align-items:center;justify-content:center;height:260px;">
+        <div class="sk" style="width:200px;height:200px;border-radius:50%;"></div>
+      </div>
+      <div id="donut-wrap" style="display:none;height:260px;align-items:center;justify-content:center;">
+        <canvas id="c-donut" style="max-width:260px;max-height:260px;"></canvas>
+      </div>
+    </div>
   </div>
 
+  <!-- ROW 2: Leaderboard + Section Averages + Extra KPIs -->
   <div class="g31">
     <div class="card">
       <div class="card-hdr"><div><div class="card-title">Agent Leaderboard</div><div class="card-sub">Ranked by average QA score</div></div></div>
       <div class="scroll">
         <table class="tbl">
           <thead><tr><th>#</th><th>Agent</th><th>Evals</th><th>Avg</th><th>CX Care /30</th><th>Resolution /50</th><th>Closing /20</th><th>Criticals</th><th>Rating</th></tr></thead>
-          <tbody id="t-body"><tr><td colspan="9"><div class="sk-row"><div class="sk" style="width:20px;height:14px;"></div><div class="sk" style="flex:1;height:14px;"></div><div class="sk" style="width:70px;height:22px;border-radius:10px;"></div></div><div class="sk-row"><div class="sk" style="width:20px;height:14px;"></div><div class="sk" style="flex:1;height:14px;"></div><div class="sk" style="width:70px;height:22px;border-radius:10px;"></div></div><div class="sk-row"><div class="sk" style="width:20px;height:14px;"></div><div class="sk" style="flex:1;height:14px;"></div><div class="sk" style="width:70px;height:22px;border-radius:10px;"></div></div></td></tr></tbody>
+          <tbody id="t-body">
+            <tr><td colspan="9">
+              <div class="sk-row"><div class="sk" style="width:20px;height:14px;"></div><div class="sk" style="flex:1;height:14px;"></div><div class="sk" style="width:70px;height:22px;border-radius:10px;"></div></div>
+              <div class="sk-row"><div class="sk" style="width:20px;height:14px;"></div><div class="sk" style="flex:1;height:14px;"></div><div class="sk" style="width:70px;height:22px;border-radius:10px;"></div></div>
+              <div class="sk-row"><div class="sk" style="width:20px;height:14px;"></div><div class="sk" style="flex:1;height:14px;"></div><div class="sk" style="width:70px;height:22px;border-radius:10px;"></div></div>
+            </td></tr>
+          </tbody>
         </table>
       </div>
     </div>
-    <div class="card"><div class="card-hdr"><div><div class="card-title">Section Averages</div><div class="card-sub">Score vs max weight</div></div></div><div id="sec-bars"><div class="pr"><div class="sk" style="height:13px;width:80%;margin-bottom:6px;"></div><div class="sk" style="height:8px;width:100%;border-radius:4px;"></div></div><div class="pr"><div class="sk" style="height:13px;width:60%;margin-bottom:6px;"></div><div class="sk" style="height:8px;width:100%;border-radius:4px;"></div></div><div class="pr"><div class="sk" style="height:13px;width:70%;margin-bottom:6px;"></div><div class="sk" style="height:8px;width:100%;border-radius:4px;"></div></div></div></div>
+    <!-- Side: section bars + 2 mini KPIs -->
+    <div class="side-card">
+      <div class="card" style="flex:0 0 auto;">
+        <div class="card-hdr"><div><div class="card-title">Section Averages</div><div class="card-sub">Score vs max weight</div></div></div>
+        <div id="sec-bars">
+          <div class="pr"><div class="sk" style="height:13px;width:80%;margin-bottom:6px;"></div><div class="sk" style="height:8px;width:100%;border-radius:4px;"></div></div>
+          <div class="pr"><div class="sk" style="height:13px;width:60%;margin-bottom:6px;"></div><div class="sk" style="height:8px;width:100%;border-radius:4px;"></div></div>
+          <div class="pr"><div class="sk" style="height:13px;width:70%;margin-bottom:6px;"></div><div class="sk" style="height:8px;width:100%;border-radius:4px;"></div></div>
+        </div>
+      </div>
+      <div class="mini-kpi green">
+        <div class="mini-kpi-lbl">Achieved Rate</div>
+        <div class="mini-kpi-val" id="mk-passrate">—</div>
+        <div class="mini-kpi-sub">of all evaluations scored 80+</div>
+      </div>
+      <div class="mini-kpi red">
+        <div class="mini-kpi-lbl">Critical Error Rate</div>
+        <div class="mini-kpi-val" id="mk-critrate">—</div>
+        <div class="mini-kpi-sub">of evaluations had a critical flag</div>
+      </div>
+    </div>
   </div>
 
   <div class="divider">Criterion & agent breakdown</div>
+
+  <!-- ROW 3 -->
   <div class="g2">
-    <div class="card"><div class="card-hdr"><div><div class="card-title">Score by Agent</div><div class="card-sub">Average final score · color = rating tier</div></div></div><div id="sk-agents"><div class="sk" style="height:190px;border-radius:8px;"></div></div><canvas id="c-agents" height="190" style="display:none;"></canvas></div>
-    <div class="card"><div class="card-hdr"><div><div class="card-title">Criterion Deep Dive</div><div class="card-sub">All 14 QA criteria · avg achieved vs max</div></div></div><div id="sk-crit"><div class="sk" style="height:190px;border-radius:8px;"></div></div><canvas id="c-crit" height="190" style="display:none;"></canvas></div>
+    <div class="card">
+      <div class="card-hdr"><div><div class="card-title">Score by Agent</div><div class="card-sub">Average final score · color = rating tier</div></div></div>
+      <div id="sk-agents"><div class="sk" style="height:210px;border-radius:8px;"></div></div>
+      <canvas id="c-agents" height="210" style="display:none;"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div><div class="card-title">Criterion Deep Dive</div><div class="card-sub">Avg score (colored) vs max weight (white outline) — orange = below 50%</div></div></div>
+      <div id="sk-crit"><div class="sk" style="height:210px;border-radius:8px;"></div></div>
+      <canvas id="c-crit" height="210" style="display:none;"></canvas>
+    </div>
   </div>
 
   <div class="divider">Quality signals</div>
+
+  <!-- ROW 4 -->
   <div class="g3">
-    <div class="card"><div class="card-hdr"><div><div class="card-title">Critical Errors</div><div class="card-sub">Flagged error frequency</div></div></div><div id="err-list"><div class="sk-row"><div class="sk" style="flex:1;height:13px;"></div></div><div class="sk-row"><div class="sk" style="width:80%;height:13px;"></div></div><div class="sk-row"><div class="sk" style="width:60%;height:13px;"></div></div></div></div>
-    <div class="card"><div class="card-hdr"><div><div class="card-title">Score Distribution</div><div class="card-sub">How scores cluster</div></div></div><div id="sk-dist"><div class="sk" style="height:178px;border-radius:8px;"></div></div><canvas id="c-dist" height="178" style="display:none;"></canvas></div>
-    <div class="card"><div class="card-hdr"><div><div class="card-title">By Interaction Type</div><div class="card-sub">Avg score per channel</div></div></div><div id="sk-type"><div class="sk" style="height:178px;border-radius:8px;"></div></div><canvas id="c-type" height="178" style="display:none;"></canvas></div>
+    <div class="card">
+      <div class="card-hdr"><div><div class="card-title">Critical Errors</div><div class="card-sub">Flagged error frequency</div></div></div>
+      <div id="err-list">
+        <div class="sk-row"><div class="sk" style="flex:1;height:13px;"></div></div>
+        <div class="sk-row"><div class="sk" style="width:80%;height:13px;"></div></div>
+        <div class="sk-row"><div class="sk" style="width:60%;height:13px;"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div><div class="card-title">Score Distribution</div><div class="card-sub">How scores cluster</div></div></div>
+      <div id="sk-dist"><div class="sk" style="height:178px;border-radius:8px;"></div></div>
+      <canvas id="c-dist" height="178" style="display:none;"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div><div class="card-title">By Interaction Type</div><div class="card-sub">Avg score per channel</div></div></div>
+      <div id="sk-type"><div class="sk" style="height:178px;border-radius:8px;"></div></div>
+      <canvas id="c-type" height="178" style="display:none;"></canvas>
+    </div>
   </div>
 
   <div class="divider">Trends & workload</div>
+
+  <!-- ROW 5 -->
   <div class="g21">
-    <div class="card"><div class="card-hdr"><div><div class="card-title">Achieved Rate Over Time</div><div class="card-sub">% scoring Achieved per audit date</div></div></div><div id="sk-pass"><div class="sk" style="height:160px;border-radius:8px;"></div></div><canvas id="c-pass" height="160" style="display:none;"></canvas></div>
-    <div class="card"><div class="card-hdr"><div><div class="card-title">Evaluator Workload</div><div class="card-sub">Evals per QA analyst</div></div></div><div id="sk-evl" style="display:flex;align-items:center;justify-content:center;height:160px;"><div class="sk" style="width:140px;height:140px;border-radius:50%;"></div></div><div id="evl-wrap" style="display:none;height:160px;align-items:center;justify-content:center;"><canvas id="c-evl" style="max-width:175px;max-height:175px;"></canvas></div></div>
+    <div class="card">
+      <div class="card-hdr"><div><div class="card-title">Achieved Rate Over Time</div><div class="card-sub">% scoring Achieved per audit date</div></div></div>
+      <div id="sk-pass"><div class="sk" style="height:200px;border-radius:8px;"></div></div>
+      <canvas id="c-pass" height="200" style="display:none;"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div><div class="card-title">Evaluator Workload</div><div class="card-sub">Evals per QA analyst · hover for name</div></div></div>
+      <div id="sk-evl" style="display:flex;align-items:center;justify-content:center;height:200px;">
+        <div class="sk" style="width:170px;height:170px;border-radius:50%;"></div>
+      </div>
+      <div id="evl-wrap" style="display:none;height:200px;align-items:center;justify-content:center;">
+        <canvas id="c-evl" style="max-width:220px;max-height:220px;"></canvas>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
-// ── REEMPLAZA ESTO CON TU URL DEL WEB APP UNA VEZ LO PUBLIQUES ──
 const PROXY_URL = "https://script.google.com/macros/s/AKfycbwIHPapy9H2xobCSMe2MzIw6OqQo60OlqjsT8dFivxg-D3aoFQx_KHMTZs5131B1hPL/exec";
 
 const CRIT_LABELS=['Professional Greeting','Willingness to Resolve','Empathy','Acknowledge Customer',
@@ -232,7 +374,8 @@ const CRIT_LABELS=['Professional Greeting','Willingness to Resolve','Empathy','A
   'Further Assistance','Closing Script'];
 const CRIT_MAX=[2,8,8,10,2,5,15,5,10,10,5,10,5,5];
 
-const G={g:'#4fc265',a:'#e8a030',r:'#e55050',b:'#5599f0',o:'#e07a30',mu:'#506855'};
+const G={g:'#4fc265',a:'#e8a030',r:'#e55050',b:'#5599f0',o:'#e07a30'};
+
 Chart.defaults.color='#7a9b7e';
 Chart.defaults.borderColor='rgba(255,255,255,.05)';
 Chart.defaults.font.family="'Outfit',sans-serif";
@@ -240,64 +383,57 @@ Chart.defaults.font.size=12;
 
 let all=[],filtered=[],CH={};
 
-function setStatus(state, msg){
-  const dot=document.getElementById('live-dot');
-  const chip=document.getElementById('last-upd');
-  dot.className='live-dot '+(state==='ok'?'':state);
-  chip.textContent=msg;
+// ── DATE FORMATTER ── strips time, shows "Apr 10" ─────────────
+function fmtDate(raw){
+  if(!raw) return '';
+  // Handle ISO strings like 2026-03-22T05:00:00.000Z
+  const d = new Date(raw);
+  if(!isNaN(d)) {
+    return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  }
+  // Already a nice string
+  return String(raw);
 }
 
-function showSk(id){document.getElementById('sk-'+id) && (document.getElementById('sk-'+id).style.display='');}
+function setStatus(state,msg){
+  document.getElementById('live-dot').className='live-dot '+(state==='ok'?'':state);
+  document.getElementById('last-upd').textContent=msg;
+}
+
 function hideSk(id){
-  const sk=document.getElementById('sk-'+id);
-  const cv=document.getElementById('c-'+id);
-  const wr=document.getElementById(id+'-wrap');
-  if(sk)sk.style.display='none';
-  if(cv)cv.style.display='block';
-  if(wr)wr.style.display='flex';
+  const sk=document.getElementById('sk-'+id),cv=document.getElementById('c-'+id),wr=document.getElementById(id+'-wrap');
+  if(sk)sk.style.display='none';if(cv)cv.style.display='block';if(wr)wr.style.display='flex';
 }
 
 async function loadData(){
   if(PROXY_URL==="PASTE_YOUR_WEBAPP_URL_HERE"){
     document.getElementById('loading-overlay').classList.remove('visible');
-    setStatus('error','⚠ Web App URL not configured');
-    showErrorState('Web App URL not set — follow setup instructions');
-    return;
+    setStatus('error','⚠ Web App URL not set');
+    showErr('Web App URL not configured — see setup instructions');return;
   }
   document.getElementById('loading-overlay').classList.add('visible');
-  document.getElementById('loader-msg').textContent='Connecting to eTags data…';
   setStatus('loading','Connecting…');
   try{
     const res=await fetch(PROXY_URL);
-    if(!res.ok) throw new Error('HTTP '+res.status);
+    if(!res.ok)throw new Error('HTTP '+res.status);
     const json=await res.json();
-    if(json.error) throw new Error(json.error);
-    const rows=json.rows||[];
-    all=rows.map(parseRow).filter(Boolean);
+    if(json.error)throw new Error(json.error);
+    all=(json.rows||[]).map(parseRow).filter(Boolean);
     document.getElementById('loading-overlay').classList.remove('visible');
-    if(!all.length){
-      setStatus('error','Connected · no data yet');
-      showErrorState('Sheet connected but no evaluation rows yet');
-      return;
-    }
+    if(!all.length){setStatus('error','Connected · no data yet');showErr('Sheet connected but no rows yet');return;}
     const now=new Date().toLocaleTimeString();
     setStatus('ok','Live · '+now);
     document.getElementById('ph-ts').textContent=all.length+' records · refreshed '+now;
-    buildAgentFilter();
-    applyFilters();
+    buildAgentFilter();applyFilters();
   }catch(e){
     document.getElementById('loading-overlay').classList.remove('visible');
     setStatus('error','⚠ '+e.message);
-    showErrorState(e.message);
-    console.error('Proxy error:',e);
+    showErr(e.message);console.error(e);
   }
 }
 
-function showErrorState(msg){
-  ['trend','agents','crit','dist','type','pass'].forEach(id=>{
-    const sk=document.getElementById('sk-'+id);
-    if(sk)sk.innerHTML=`<div class="state">⚠ ${msg}</div>`;
-  });
+function showErr(msg){
+  ['trend','agents','crit','dist','type','pass'].forEach(id=>{const sk=document.getElementById('sk-'+id);if(sk)sk.innerHTML=`<div class="state">⚠ ${msg}</div>`;});
   ['sk-donut','sk-evl'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='<div class="state">—</div>';});
   document.getElementById('err-list').innerHTML='<div class="state">—</div>';
   document.getElementById('sec-bars').innerHTML='<div class="state">—</div>';
@@ -305,26 +441,19 @@ function showErrorState(msg){
 }
 
 function parseRow(r){
-  const ag=(r['Agent Name']||'').trim(); if(!ag) return null;
+  const ag=(r['Agent Name']||'').trim();if(!ag)return null;
   const n=k=>parseFloat(r[k])||0;
-  const scores=[
-    n('Score: Professional Greeting'),n('Score: Willingness to Resolve'),
-    n('Score: Empathy'),n('Score: Acknowledge Customer'),
-    n('Score: Asked Relevant Questions'),n('Score: Customer Verification'),
-    n('Score: Available Solutions'),n('Score: Confirmed Resolution'),
-    n('Score: Managed Expectations'),n('Score: Went Extra Mile'),
-    n('Score: Additional Observations'),n('Score: CRM Notation'),
-    n('Score: Further Assistance'),n('Score: Closing Script'),
-  ];
   return {
     ts:r['Timestamp']||'',ev:r['Evaluator Email']||'',ag,
-    tp:r['Type']||'',dt:r['Date']||'',adt:r['Audit Date']||'',sup:r['Supervisor']||'',
-    scores,
+    tp:r['Type']||'',dt:r['Date']||'',adt:r['Audit Date']||'',
+    scores:[n('Score: Professional Greeting'),n('Score: Willingness to Resolve'),n('Score: Empathy'),
+      n('Score: Acknowledge Customer'),n('Score: Asked Relevant Questions'),n('Score: Customer Verification'),
+      n('Score: Available Solutions'),n('Score: Confirmed Resolution'),n('Score: Managed Expectations'),
+      n('Score: Went Extra Mile'),n('Score: Additional Observations'),n('Score: CRM Notation'),
+      n('Score: Further Assistance'),n('Score: Closing Script')],
     cc:n('Total Customer Care (30%)'),rs:n('Total Resolution (50%)'),cl:n('Total Closing (20%)'),
-    cf:(r['Critical Errors Flagged']||'').toUpperCase()==='YES',
-    cd:r['Critical Error Details']||'',
+    cf:(r['Critical Errors Flagged']||'').toUpperCase()==='YES',cd:r['Critical Error Details']||'',
     fs:n('Final QA Score (%)'),rat:r['Rating']||'',
-    ww:r['What Went Well']||'',cb:r['What Could Have Been Better']||'',
   };
 }
 
@@ -364,7 +493,8 @@ function kc(k){if(CH[k]){CH[k].destroy();delete CH[k];}}
 
 function renderAll(){
   renderKPIs();renderTrend();renderDonut();renderLeaderboard();renderSectionBars();
-  renderAgentBar();renderCriteria();renderErrors();renderDist();renderType();renderPassRate();renderEval();
+  renderMiniKPIs();renderAgentBar();renderCriteria();renderErrors();
+  renderDist();renderType();renderPassRate();renderEval();
 }
 
 function renderKPIs(){
@@ -382,33 +512,66 @@ function renderKPIs(){
     <div class="kpi ke"><div class="kpi-lbl">Total Evaluations</div><div class="kpi-val" style="color:var(--blue)">${R.length}</div><div class="kpi-sub">${ags} agent${ags!==1?'s':''} evaluated</div></div>`;
 }
 
+function renderMiniKPIs(){
+  const R=filtered;if(!R.length)return;
+  const passRate=Math.round(R.filter(r=>r.rat==='Achieved').length/R.length*100);
+  const critRate=Math.round(R.filter(r=>r.cf).length/R.length*100);
+  document.getElementById('mk-passrate').textContent=passRate+'%';
+  document.getElementById('mk-critrate').textContent=critRate+'%';
+}
+
 function renderTrend(){
-  const bd={};filtered.forEach(r=>{const d=r.adt||r.dt||'?';if(!bd[d])bd[d]=[];bd[d].push(r.fs);});
-  const lbs=Object.keys(bd).sort(),data=lbs.map(d=>parseFloat(avg(bd[d]).toFixed(1)));
-  const tr=data.length>=2?data[data.length-1]-data[0]:0;
+  const bd={};
+  filtered.forEach(r=>{
+    const raw=r.adt||r.dt||'';
+    const key=fmtDate(raw)||'Unknown';
+    if(!bd[key])bd[key]=[];bd[key].push(r.fs);
+  });
+  const lbs=Object.keys(bd),data=lbs.map(d=>parseFloat(avg(bd[d]).toFixed(1)));
+  const tr=data.length>=2?parseFloat((data[data.length-1]-data[0]).toFixed(1)):0;
+  const firstScore=data[0]||0,lastScore=data[data.length-1]||0;
   const chip=document.getElementById('trend-chip');
-  chip.textContent=(tr>=0?'▲ +':'▼ ')+tr.toFixed(1)+'%';
+  chip.textContent=(tr>=0?'▲ +':'▼ ')+tr+'%';
   chip.style.cssText=tr>=0?'background:rgba(79,194,101,.12);color:var(--g300);border:1px solid rgba(79,194,101,.2);':'background:rgba(229,80,80,.12);color:var(--red);border:1px solid rgba(229,80,80,.2);';
+  document.getElementById('trend-tooltip-text').textContent=
+    `Score went from ${firstScore}% (${lbs[0]||'first eval'}) to ${lastScore}% (${lbs[lbs.length-1]||'latest eval'}), a change of ${tr>0?'+':''}${tr}% over the selected period.`;
   hideSk('trend');kc('trend');
   CH.trend=new Chart(document.getElementById('c-trend'),{type:'line',
-    data:{labels:lbs,datasets:[{label:'Avg Score',data,borderColor:G.g,backgroundColor:'rgba(79,194,101,.06)',borderWidth:2,pointBackgroundColor:G.g,pointRadius:3.5,tension:.38,fill:true}]},
-    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}},x:{ticks:{maxTicksLimit:8}}}}
+    data:{labels:lbs,datasets:[{label:'Avg Score',data,borderColor:G.g,backgroundColor:'rgba(79,194,101,.06)',borderWidth:2,pointBackgroundColor:G.g,pointRadius:4,tension:.38,fill:true}]},
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+      scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}},x:{ticks:{maxTicksLimit:10}}}}
   });
 }
 
 function renderDonut(){
-  const a=filtered.filter(r=>r.rat==='Achieved').length,d=filtered.filter(r=>r.rat==='Developing').length,n=filtered.filter(r=>r.rat==='Needs Support').length;
-  document.getElementById('sk-donut').style.display='none';document.getElementById('donut-wrap').style.display='flex';kc('donut');
+  const a=filtered.filter(r=>r.rat==='Achieved').length,
+    d=filtered.filter(r=>r.rat==='Developing').length,
+    n=filtered.filter(r=>r.rat==='Needs Support').length;
+  document.getElementById('sk-donut').style.display='none';
+  document.getElementById('donut-wrap').style.display='flex';kc('donut');
   CH.donut=new Chart(document.getElementById('c-donut'),{type:'doughnut',
-    data:{labels:['Achieved','Developing','Needs Support'],datasets:[{data:[a,d,n],backgroundColor:[G.g,G.a,G.r],borderWidth:2,borderColor:'#161e17',hoverOffset:4}]},
-    options:{responsive:true,cutout:'70%',plugins:{legend:{position:'bottom',labels:{font:{size:12},padding:12}},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw}}}}
+    data:{labels:['Achieved','Developing','Needs Support'],
+      datasets:[{data:[a,d,n],backgroundColor:[G.g,G.a,G.r],borderWidth:3,borderColor:'#161e17',hoverOffset:6}]},
+    options:{responsive:true,cutout:'65%',
+      plugins:{
+        legend:{position:'bottom',labels:{font:{size:13},padding:16,boxWidth:14,boxHeight:14}},
+        tooltip:{callbacks:{
+          label:ctx=>{
+            const total=ctx.dataset.data.reduce((a,b)=>a+b,0);
+            const pct=total?Math.round(ctx.raw/total*100):0;
+            return ` ${ctx.label}: ${ctx.raw} (${pct}%)`;
+          }
+        }}
+      }
+    }
   });
 }
 
 function renderLeaderboard(){
   const bA={};filtered.forEach(r=>{if(!bA[r.ag])bA[r.ag]=[];bA[r.ag].push(r);});
   const ags=Object.entries(bA).map(([n,rows])=>{
-    const sc=avg(rows.map(r=>r.fs)),cc=avg(rows.map(r=>r.cc)),rs=avg(rows.map(r=>r.rs)),cl=avg(rows.map(r=>r.cl)),crits=rows.filter(r=>r.cf).length;
+    const sc=avg(rows.map(r=>r.fs)),cc=avg(rows.map(r=>r.cc)),
+      rs=avg(rows.map(r=>r.rs)),cl=avg(rows.map(r=>r.cl)),crits=rows.filter(r=>r.cf).length;
     return {n,cnt:rows.length,sc:parseFloat(sc.toFixed(1)),cc:parseFloat(cc.toFixed(1)),rs:parseFloat(rs.toFixed(1)),cl:parseFloat(cl.toFixed(1)),crits};
   }).sort((a,b)=>b.sc-a.sc);
   const tb=document.getElementById('t-body');
@@ -417,7 +580,10 @@ function renderLeaderboard(){
   tb.innerHTML=ags.map((a,i)=>{
     const rat=a.sc>=80?'Achieved':a.sc>=40?'Developing':'Needs Support';
     const cc=a.crits>0?`<span class="badge br">${a.crits}</span>`:`<span class="mono">—</span>`;
-    return `<tr><td class="mono">${i<3?md[i]:i+1}</td><td class="an">${a.n}</td><td class="mono">${a.cnt}</td><td><span class="pill ${rpill(rat)}">${a.sc}%</span></td><td class="mono">${a.cc}</td><td class="mono">${a.rs}</td><td class="mono">${a.cl}</td><td>${cc}</td><td><span class="badge ${rbadge(rat)}">${rat}</span></td></tr>`;
+    return `<tr><td class="mono">${i<3?md[i]:i+1}</td><td class="an">${a.n}</td><td class="mono">${a.cnt}</td>
+      <td><span class="pill ${rpill(rat)}">${a.sc}%</span></td>
+      <td class="mono">${a.cc}</td><td class="mono">${a.rs}</td><td class="mono">${a.cl}</td>
+      <td>${cc}</td><td><span class="badge ${rbadge(rat)}">${rat}</span></td></tr>`;
   }).join('');
 }
 
@@ -428,7 +594,8 @@ function renderSectionBars(){
     {l:'CX Experience · Customer Care',v:cc.toFixed(1),m:30,c:G.b},
     {l:'S&K · Resolution',v:rs.toFixed(1),m:50,c:G.g},
     {l:'S&K · Closing',v:cl.toFixed(1),m:20,c:G.o},
-  ].map(s=>`<div class="pr"><div class="pr-lbl"><span>${s.l}</span><span>${s.v} / ${s.m}</span></div><div class="pr-track"><div class="pr-fill" style="width:${(s.v/s.m*100).toFixed(1)}%;background:${s.c};"></div></div></div>`).join('');
+  ].map(s=>`<div class="pr"><div class="pr-lbl"><span>${s.l}</span><span>${s.v} / ${s.m}</span></div>
+    <div class="pr-track"><div class="pr-fill" style="width:${(s.v/s.m*100).toFixed(1)}%;background:${s.c};"></div></div></div>`).join('');
 }
 
 function renderAgentBar(){
@@ -436,8 +603,10 @@ function renderAgentBar(){
   const ags=Object.entries(bA).map(([n,s])=>{return{n,sc:parseFloat(avg(s).toFixed(1))};} ).sort((a,b)=>b.sc-a.sc);
   hideSk('agents');kc('agents');
   CH.agents=new Chart(document.getElementById('c-agents'),{type:'bar',
-    data:{labels:ags.map(a=>a.n.split(' ')[0]),datasets:[{data:ags.map(a=>a.sc),backgroundColor:ags.map(a=>rcol(a.sc)),borderRadius:6,borderSkipped:false}]},
-    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}},x:{ticks:{}}}}
+    data:{labels:ags.map(a=>a.n),
+      datasets:[{data:ags.map(a=>a.sc),backgroundColor:ags.map(a=>rcol(a.sc)),borderRadius:6,borderSkipped:false}]},
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+      scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}},x:{ticks:{font:{size:11}}}}}
   });
 }
 
@@ -445,24 +614,65 @@ function renderCriteria(){
   const R=filtered;if(!R.length)return;
   const avgs=CRIT_MAX.map((_,i)=>parseFloat(avg(R.map(r=>r.scores[i])).toFixed(2)));
   const pcts=avgs.map((v,i)=>parseFloat((v/CRIT_MAX[i]*100).toFixed(1)));
+  // Color: green if >=80%, amber if >=50%, red if <50%
+  const colors=pcts.map(p=>p>=80?G.g:p>=50?G.a:G.r);
   hideSk('crit');kc('crit');
   CH.crit=new Chart(document.getElementById('c-crit'),{type:'bar',
-    data:{labels:CRIT_LABELS.map(l=>l.length>16?l.slice(0,14)+'…':l),
+    data:{
+      labels:CRIT_LABELS,
       datasets:[
-        {label:'Avg score',data:avgs,backgroundColor:pcts.map(p=>rcol(p)),borderRadius:4,borderSkipped:false,barPercentage:.55},
-        {label:'Max weight',data:CRIT_MAX,backgroundColor:'rgba(255,255,255,.06)',borderRadius:4,borderSkipped:false,barPercentage:.55},
-      ]},
-    options:{responsive:true,plugins:{legend:{display:true,position:'top',labels:{font:{size:11},padding:10}},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw}}},scales:{y:{beginAtZero:true},x:{ticks:{font:{size:9}}}}}
+        {
+          label:'Avg Score',data:avgs,
+          backgroundColor:colors,
+          borderRadius:4,borderSkipped:false,barPercentage:.5,categoryPercentage:.8
+        },
+        {
+          label:'Max Weight',data:CRIT_MAX,
+          backgroundColor:'transparent',
+          borderColor:'rgba(255,255,255,.25)',
+          borderWidth:1.5,
+          borderRadius:4,borderSkipped:false,barPercentage:.5,categoryPercentage:.8
+        },
+      ]
+    },
+    options:{responsive:true,
+      plugins:{
+        legend:{display:true,position:'top',labels:{font:{size:11},padding:12,
+          generateLabels:chart=>{
+            return[
+              {text:'Avg Score (🟢≥80% 🟡≥50% 🔴<50%)',fillStyle:'transparent',strokeStyle:G.g,lineWidth:2,hidden:false,index:0},
+              {text:'Max Weight',fillStyle:'transparent',strokeStyle:'rgba(255,255,255,.25)',lineWidth:2,hidden:false,index:1},
+            ];
+          }
+        }},
+        tooltip:{callbacks:{
+          label:ctx=>{
+            if(ctx.datasetIndex===0){
+              const pct=pcts[ctx.dataIndex];
+              return ` Avg: ${ctx.raw} (${pct}% of max)`;
+            }
+            return ` Max: ${ctx.raw}`;
+          }
+        }}
+      },
+      scales:{
+        y:{beginAtZero:true,ticks:{font:{size:10}}},
+        x:{ticks:{font:{size:10},maxRotation:35,minRotation:25}}
+      }
+    }
   });
 }
 
 function renderErrors(){
-  const cn={};filtered.forEach(r=>{if(r.cf&&r.cd)r.cd.split(',').forEach(e=>{const k=e.trim();if(k&&k!=='None')cn[k]=(cn[k]||0)+1;});});
+  const cn={};
+  filtered.forEach(r=>{if(r.cf&&r.cd)r.cd.split(',').forEach(e=>{const k=e.trim();if(k&&k!=='None')cn[k]=(cn[k]||0)+1;});});
   const sorted=Object.entries(cn).sort((a,b)=>b[1]-a[1]);
   const el=document.getElementById('err-list');
   if(!sorted.length){el.innerHTML='<div class="state">✓ No critical errors in this range</div>';return;}
   const mx=sorted[0][1];
-  el.innerHTML=sorted.map(([n,c])=>`<div class="er"><span class="er-name">${n}</span><span class="er-cnt">${c}</span><div class="er-bar"><div class="er-bar-f" style="width:${Math.round(c/mx*100)}%"></div></div></div>`).join('');
+  el.innerHTML=sorted.map(([n,c])=>`
+    <div class="er"><span class="er-name">${n}</span><span class="er-cnt">${c}</span>
+    <div class="er-bar"><div class="er-bar-f" style="width:${Math.round(c/mx*100)}%"></div></div></div>`).join('');
 }
 
 function renderDist(){
@@ -471,7 +681,8 @@ function renderDist(){
   hideSk('dist');kc('dist');
   CH.dist=new Chart(document.getElementById('c-dist'),{type:'bar',
     data:{labels:Object.keys(bk),datasets:[{data:Object.values(bk),backgroundColor:[G.r,G.r,G.a,G.a,G.g],borderRadius:6,borderSkipped:false}]},
-    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' evals'}}},scales:{y:{beginAtZero:true},x:{ticks:{}}}}
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+' evals'}}},
+      scales:{y:{beginAtZero:true},x:{ticks:{}}}}
   });
 }
 
@@ -481,27 +692,67 @@ function renderType(){
   hideSk('type');kc('type');
   CH.type=new Chart(document.getElementById('c-type'),{type:'bar',
     data:{labels:lbs,datasets:[{data,backgroundColor:lbs.map((_,i)=>[G.g,G.b,G.o,G.a,G.r][i%5]),borderRadius:6,borderSkipped:false}]},
-    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}},x:{ticks:{}}}}
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+      scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}},x:{ticks:{}}}}
   });
 }
 
 function renderPassRate(){
-  const bd={};filtered.forEach(r=>{const d=r.adt||r.dt||'?';if(!bd[d])bd[d]={t:0,a:0};bd[d].t++;if(r.rat==='Achieved')bd[d].a++;});
-  const lbs=Object.keys(bd).sort(),data=lbs.map(d=>parseFloat((bd[d].a/bd[d].t*100).toFixed(1)));
+  const bd={};
+  filtered.forEach(r=>{
+    const key=fmtDate(r.adt||r.dt||'')||'Unknown';
+    if(!bd[key])bd[key]={t:0,a:0};bd[key].t++;if(r.rat==='Achieved')bd[key].a++;
+  });
+  const lbs=Object.keys(bd),data=lbs.map(d=>parseFloat((bd[d].a/bd[d].t*100).toFixed(1)));
   hideSk('pass');kc('pass');
   CH.pass=new Chart(document.getElementById('c-pass'),{type:'line',
-    data:{labels:lbs,datasets:[{label:'Achieved %',data,borderColor:G.b,backgroundColor:'rgba(85,153,240,.06)',borderWidth:2,pointBackgroundColor:G.b,pointRadius:3,tension:.35,fill:true}]},
-    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}},x:{ticks:{maxTicksLimit:8}}}}
+    data:{labels:lbs,datasets:[{label:'Achieved %',data,borderColor:G.b,backgroundColor:'rgba(85,153,240,.06)',borderWidth:2,pointBackgroundColor:G.b,pointRadius:4,tension:.35,fill:true}]},
+    options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.raw+'%'}}},
+      scales:{y:{min:0,max:100,ticks:{callback:v=>v+'%'}},x:{ticks:{maxTicksLimit:10}}}}
   });
 }
 
 function renderEval(){
   const bE={};filtered.forEach(r=>{const k=r.ev||'Unknown';bE[k]=(bE[k]||0)+1;});
   const lbs=Object.keys(bE);
-  document.getElementById('sk-evl').style.display='none';document.getElementById('evl-wrap').style.display='flex';kc('evl');
+  document.getElementById('sk-evl').style.display='none';
+  document.getElementById('evl-wrap').style.display='flex';kc('evl');
   CH.evl=new Chart(document.getElementById('c-evl'),{type:'doughnut',
-    data:{labels:lbs,datasets:[{data:Object.values(bE),backgroundColor:lbs.map((_,i)=>[G.g,G.b,G.o,G.a,G.r,'#9b5de5'][i%6]),borderWidth:2,borderColor:'#161e17'}]},
-    options:{responsive:true,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}},tooltip:{callbacks:{label:c=>' '+c.label+': '+c.raw+' evals'}}}}
+    data:{labels:lbs,datasets:[{data:Object.values(bE),
+      backgroundColor:lbs.map((_,i)=>[G.g,G.b,G.o,G.a,G.r,'#9b5de5'][i%6]),
+      borderWidth:2,borderColor:'#161e17'}]},
+    options:{
+      responsive:true,cutout:'55%',
+      plugins:{
+        legend:{
+          position:'bottom',
+          labels:{
+            font:{size:12},padding:14,boxWidth:14,boxHeight:14,
+            // Show full email in legend
+            generateLabels:chart=>{
+              const ds=chart.data.datasets[0];
+              return chart.data.labels.map((lbl,i)=>{
+                const total=ds.data.reduce((a,b)=>a+b,0);
+                const pct=total?Math.round(ds.data[i]/total*100):0;
+                return {
+                  text:`${lbl} (${ds.data[i]} · ${pct}%)`,
+                  fillStyle:ds.backgroundColor[i],
+                  strokeStyle:ds.backgroundColor[i],
+                  lineWidth:0,hidden:false,index:i
+                };
+              });
+            }
+          }
+        },
+        tooltip:{callbacks:{
+          label:ctx=>{
+            const total=ctx.dataset.data.reduce((a,b)=>a+b,0);
+            const pct=total?Math.round(ctx.raw/total*100):0;
+            return ` ${ctx.label}: ${ctx.raw} evals (${pct}%)`;
+          }
+        }}
+      }
+    }
   });
 }
 
