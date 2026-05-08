@@ -355,11 +355,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-h
     </div>
     <div class="card">
       <div class="card-hdr"><div><div class="card-title">Evaluator Workload</div><div class="card-sub">Evals per QA analyst · hover for name</div></div></div>
-      <div id="sk-evl" style="display:flex;align-items:center;justify-content:center;height:200px;">
-        <div class="sk" style="width:170px;height:170px;border-radius:50%;"></div>
+      <div id="sk-evl" style="display:flex;align-items:center;justify-content:center;height:280px;">
+        <div class="sk" style="width:200px;height:200px;border-radius:50%;"></div>
       </div>
-      <div id="evl-wrap" style="display:none;height:200px;align-items:center;justify-content:center;">
-        <canvas id="c-evl" style="max-width:220px;max-height:220px;"></canvas>
+      <div id="evl-wrap" style="display:none;flex-direction:column;align-items:center;padding:4px 0;">
+        <canvas id="c-evl" style="width:100% !important;max-height:260px;"></canvas>
       </div>
     </div>
   </div>
@@ -376,10 +376,12 @@ const CRIT_MAX=[2,8,8,10,2,5,15,5,10,10,5,10,5,5];
 
 const G={g:'#4fc265',a:'#e8a030',r:'#e55050',b:'#5599f0',o:'#e07a30'};
 
-Chart.defaults.color='#7a9b7e';
+Chart.defaults.color='#a8c4ac';
 Chart.defaults.borderColor='rgba(255,255,255,.05)';
 Chart.defaults.font.family="'Outfit',sans-serif";
 Chart.defaults.font.size=12;
+Chart.defaults.plugins.legend.labels.color='#a8c4ac';
+Chart.defaults.plugins.legend.labels.font={size:12,family:"'Outfit',sans-serif"};
 
 let all=[],filtered=[],CH={};
 
