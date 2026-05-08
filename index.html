@@ -383,17 +383,6 @@ Chart.defaults.font.size=12;
 Chart.defaults.plugins.legend.labels.color='#a8c4ac';
 Chart.defaults.plugins.legend.labels.font={size:12,family:"'Outfit',sans-serif"};
 
-// Force all Chart.js legends to use light text — overrides generateLabels color
-Chart.register({
-  id:'darkLegend',
-  afterUpdate(chart){
-    const lc=chart.options?.plugins?.legend;
-    if(lc&&lc.labels){
-      lc.labels.color='#a8c4ac';
-    }
-  }
-});
-
 let all=[],filtered=[],CH={};
 
 // ── DATE FORMATTER ── strips time, shows "Apr 10" ─────────────
