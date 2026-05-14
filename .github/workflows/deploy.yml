@@ -1,0 +1,51 @@
+name: Deploy eTags QA Dashboard
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # allows manual trigger from GitHub UI
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Inject PROXY_URL secret into index.html
+        run: |
+          sed -i 's|__PROXY_URL__|${{ secrets.PROXY_URL }}|g' index.html
+
+      - name: Verify injection (shows placeholder is gone, never logs the real URL)
+        run: |
+          if grep -q '__PROXY_URL__' index.html; then
+            echo "ERROR: placeholder was not replaced. Is PROXY_URL secret set?"
+            exit 1
+          else
+            echo "OK: secret injected successfully"
+          fi
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
