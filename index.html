@@ -501,8 +501,8 @@ function parseCallRow(r) {
 function parseEmailRow(r) {
   const agRaw = (r['Agents name'] || '').trim(); if (!agRaw) return null;
   const ag = canonEmailName(agRaw);
-  const scoreStr = String(r['QA Score'] || '').replace('%','').trim();
-  const score = parseFloat(scoreStr);
+  // Proxy uses getDisplayValues() for this tab, so score always arrives as "88%" string
+  const score = parseFloat(String(r['QA Score'] || '').replace('%','').trim());
   if (isNaN(score)) return null;
   const rat = score >= 80 ? 'Achieved' : score >= 40 ? 'Developing' : 'Needs Support';
   return {
