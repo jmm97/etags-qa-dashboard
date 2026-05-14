@@ -219,6 +219,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-h
     <option value="Developing">Developing</option>
     <option value="Needs Support">Needs Support</option>
   </select>
+  <select class="sel" id="f-country" onchange="applyFilters()">
+    <option value="all">All countries</option>
+    <option value="Colombia">Colombia</option>
+    <option value="Nicaragua">Nicaragua</option>
+  </select>
   <div class="sep"></div>
   <span id="rec">—</span>
 </div>
@@ -341,17 +346,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-h
 
   <div class="divider">Trends & workload</div>
 
-  <div class="g21">
-    <div class="card">
-      <div class="card-hdr"><div><div class="card-title">Achieved Rate Over Time</div><div class="card-sub">All channels · % scoring Achieved per date</div></div></div>
-      <div id="sk-pass"><div class="sk" style="height:200px;border-radius:8px;"></div></div>
-      <canvas id="c-pass" height="200" style="display:none;"></canvas>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><div><div class="card-title">Evaluator Workload</div><div class="card-sub">Calls/Tickets · evals per QA analyst</div></div></div>
-      <div id="sk-evl" style="display:flex;align-items:center;justify-content:center;height:200px;"><div class="sk" style="width:180px;height:180px;border-radius:50%;"></div></div>
-      <div id="evl-wrap" style="display:none;flex-direction:column;align-items:center;padding:4px 0;"><canvas id="c-evl" style="width:100% !important;max-height:260px;"></canvas></div>
-    </div>
+  <div class="card">
+    <div class="card-hdr"><div><div class="card-title">Achieved Rate Over Time</div><div class="card-sub">All channels · % scoring Achieved per date</div></div></div>
+    <div id="sk-pass"><div class="sk" style="height:200px;border-radius:8px;"></div></div>
+    <canvas id="c-pass" height="200" style="display:none;"></canvas>
   </div>
 </div>
 
@@ -365,6 +363,17 @@ const CRIT_LABELS = ['Professional Greeting','Willingness to Resolve','Empathy',
   'Went Extra Mile','Additional Observations','CRM Notation',
   'Further Assistance','Closing Script'];
 const CRIT_MAX = [2,8,8,10,2,5,15,5,10,10,5,10,5,5];
+
+// Country map — Colombia agents (normalized lowercase, accent-free)
+const COLOMBIA = new Set([
+  'daniel kalil','syriana rivero','sara seba','johana ortiz','dayara navarro',
+  'camila patino','diana solano','maria seba','ginna vargas','fernando santiago',
+  'karina prada','venancio reyes','miguel beleno'
+]);
+function agentCountry(ag) {
+  return COLOMBIA.has(ag.trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase())
+    ? 'Colombia' : 'Nicaragua';
+}
 
 // ── NAME MAPPING: rawEmail → canonical QA-form name ───────────
 // Agents that appear in both forms. Key = accents-stripped lowercase.
@@ -563,9 +572,10 @@ function buildFilters() {
 function applyFilters() {
   const fp = document.getElementById('f-period').value;
   const fa = document.getElementById('f-agent').value;
-  const ft = document.getElementById('f-type').value;   // interaction type
+  const ft = document.getElementById('f-type').value;
   const fr = document.getElementById('f-rating').value;
-  const fc = document.getElementById('f-channel').value; // all/calls/email
+  const fc = document.getElementById('f-channel').value;
+  const fco = document.getElementById('f-country').value; // all/Colombia/Nicaragua
   const now = new Date();
 
   function periodOk(r) {
@@ -583,12 +593,14 @@ function applyFilters() {
     (fa === 'all' || r.ag === fa) &&
     (ft === 'all' || r.tp === ft) &&
     (fr === 'all' || r.rat === fr) &&
+    (fco === 'all' || agentCountry(r.ag) === fco) &&
     periodOk(r)
   );
 
   filteredEmail = (fc === 'calls') ? [] : allEmailRows.filter(r =>
     (fa === 'all' || r.ag === fa) &&
     (fr === 'all' || r.rat === fr) &&
+    (fco === 'all' || agentCountry(r.ag) === fco) &&
     periodOk(r)
   );
 
@@ -613,7 +625,7 @@ function renderAll() {
   renderLeaderboard(); renderSectionBars(); renderMiniKPIs();
   renderAgentBar(); renderCriteria(); renderAHT();
   renderErrors(); renderDist(); renderType();
-  renderPassRate(); renderEval();
+  renderPassRate();
 }
 
 // ── KPIs ──────────────────────────────────────────────────────
@@ -937,27 +949,6 @@ function renderPassRate() {
       scales:{ y:{min:0,max:100,ticks:{callback:v=>v+'%'}}, x:{ticks:{maxTicksLimit:10}} } } });
 }
 
-// ── EVALUATOR WORKLOAD (calls only) ───────────────────────────
-function renderEval() {
-  const bE = {};
-  filteredCall.forEach(r => { const k=r.ev||'Unknown'; bE[k]=(bE[k]||0)+1; });
-  const lbs = Object.keys(bE);
-  document.getElementById('sk-evl').style.display = 'none';
-  document.getElementById('evl-wrap').style.display = 'flex';
-  kc('evl');
-  if (!lbs.length) {
-    document.getElementById('evl-wrap').innerHTML = '<div class="na-card">No call evaluator data in range</div>';
-    return;
-  }
-  CH.evl = new Chart(document.getElementById('c-evl'), {
-    type:'doughnut',
-    data:{ labels:lbs, datasets:[{ data:Object.values(bE),
-      backgroundColor:lbs.map((_,i)=>[G.g,G.b,G.o,G.a,G.r,G.p][i%6]),
-      borderWidth:2, borderColor:'var(--card)' }] },
-    options:{ responsive:true, cutout:'52%',
-      plugins:{ legend:{position:'bottom', labels:{font:{size:12},padding:12,color:'var(--chart-text)'}},
-        tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw} evals`}} } } });
-}
 
 loadData();
 </script>
